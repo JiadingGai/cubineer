@@ -70,16 +70,18 @@ async fn controller_children_share_budget_but_not_history_or_execution_capacity(
         .session
         .services
         .agent_control
-        .record_rollout_budget_usage(&TokenUsage {
+        .record_usage(TokenUsage {
             output_tokens: 25,
             ..Default::default()
-        })?;
+        })
+        .await?;
     let reminder = parent
         .thread
         .session
         .services
         .agent_control
         .pending_budget_reminder(parent.thread_id, "window")
+        .await
         .expect("shared budget");
     assert_eq!(reminder.remaining_tokens, 75);
     manager

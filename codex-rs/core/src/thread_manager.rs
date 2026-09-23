@@ -3,6 +3,7 @@ mod shared_instructions;
 
 use crate::CodexAppsToolsCache;
 use crate::agent::LocalAgentControl;
+use crate::agent::control::AgentControlInit;
 use crate::agents_md_manager::SessionInstructions;
 use crate::attestation::AttestationProvider;
 use crate::codex_thread::CodexThread;
@@ -242,7 +243,7 @@ pub struct ThreadManager {
 pub struct InternalSessionParent {
     pub(crate) thread_id: ThreadId,
     pub(crate) auth_manager: Arc<AuthManager>,
-    pub(crate) agent_control: LocalAgentControl,
+    pub(crate) agent_control: AgentControlInit,
     pub(crate) originator: String,
     pub(crate) inherited_instructions: Option<SessionInstructions>,
 }
@@ -314,7 +315,7 @@ struct ThreadSpawnRequest {
     startup: Option<Arc<crate::session::startup::SessionStartup>>,
     options: StartThreadOptions,
     auth_manager: Arc<AuthManager>,
-    agent_control: LocalAgentControl,
+    agent_control: AgentControlInit,
     parent_thread_id: Option<ThreadId>,
     parent_originator: Option<String>,
     forked_from_thread_id: Option<ThreadId>,
@@ -329,13 +330,13 @@ impl ThreadSpawnRequest {
     fn new(
         options: StartThreadOptions,
         auth_manager: Arc<AuthManager>,
-        agent_control: LocalAgentControl,
+        agent_control: impl Into<AgentControlInit>,
     ) -> Self {
         Self {
             startup: None,
             options,
             auth_manager,
-            agent_control,
+            agent_control: agent_control.into(),
             parent_thread_id: None,
             parent_originator: None,
             forked_from_thread_id: None,
@@ -991,6 +992,7 @@ impl ThreadManager {
 
         for descendant_id in self
             .agent_control()
+            .runtime
             .list_live_agent_subtree_thread_ids(thread_id)
             .await?
         {
@@ -1060,11 +1062,10 @@ impl ThreadManager {
         options.internal_parent = Some(InternalSessionParent {
             thread_id: parent_thread_id,
             auth_manager: Arc::clone(&parent.session.services.auth_manager),
-            agent_control: parent
-                .session
-                .services
-                .local_agent_runtime
-                .control(parent.session.session_id()),
+            agent_control: AgentControlInit::Inherited {
+                control: Arc::clone(&parent.session.services.agent_control),
+                runtime: parent.session.services.local_agent_runtime.clone(),
+            },
             originator: parent.config_snapshot().await.originator,
             inherited_instructions,
         });
@@ -2109,8 +2110,9 @@ impl ThreadManagerState {
         if let InitialHistory::Resumed(resumed) = &initial_history
             && initial_history.get_multi_agent_version() == Some(MultiAgentVersion::V2)
             && !session_source.is_non_root_agent()
+            && let AgentControlInit::Local(control) = &agent_control
         {
-            agent_control
+            control
                 .restore_v2_agent_metadata(&config, resumed.conversation_id)
                 .await;
         }

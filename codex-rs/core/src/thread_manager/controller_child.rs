@@ -17,7 +17,8 @@ impl ThreadManager {
         parent
             .session
             .services
-            .agent_control
+            .local_agent_runtime
+            .control(parent.session.services.agent_control.identity())
             .close_agent(child_id)
             .await?;
         Ok(())
@@ -49,7 +50,8 @@ impl ThreadManager {
         parent
             .session
             .services
-            .agent_control
+            .local_agent_runtime
+            .control(parent.session.services.agent_control.identity())
             .spawn_controller_agent(options, parent_thread_id)
             .await
     }
