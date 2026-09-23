@@ -1,9 +1,9 @@
 //! Low-level markdown event renderer for the TUI transcript.
 //!
 //! This module consumes `pulldown-cmark` events and emits styled `ratatui`
-//! lines, including table layout, Mermaid previews, width-aware wrapping, and local file-link
+//! lines, including table layout, task-list checkboxes, Mermaid previews, wrapping, and local file-link
 //! display. It is the final rendering stage used by higher-level helpers in
-//! `markdown.rs`.
+//! `markdown.rs`. Launch-time `tui.rendering` preferences preserve disabled features as source.
 //!
 //! Local file-link parsing and display policy live in [`local_links`].
 //! List spacing stays a renderer policy: compact while streaming in an owned viewport, uniform
@@ -78,8 +78,11 @@ mod list_spacing;
 mod local_links;
 mod math;
 mod mermaid;
+pub(crate) mod preferences;
+mod source_tables;
 mod streaming;
 mod table_key_value;
+mod task_lists;
 mod web_links;
 
 use file_citations::FileCitations;
@@ -93,6 +96,9 @@ pub(crate) use streaming::render_streaming_markdown_lines_with_width_and_cwd;
 #[cfg(test)]
 #[path = "markdown_render/list_spacing_tests.rs"]
 mod list_spacing_tests;
+#[cfg(test)]
+#[path = "markdown_render/task_list_tests.rs"]
+mod task_list_tests;
 pub(crate) use web_links::hide_web_link_destination;
 use web_links::style_bare_web_urls;
 
@@ -365,10 +371,12 @@ pub(crate) fn render_markdown_lines_with_width_cwd_and_hidden_link_destinations(
     let mut options = Options::empty();
     options.insert(Options::ENABLE_STRIKETHROUGH);
     options.insert(Options::ENABLE_TABLES);
+    options.set(Options::ENABLE_TASKLISTS, preferences::current().lists);
     let math = math::MathMarkdown::new(input, options, width);
-    let parser = DecodedTextMerge::new(
+    let parser = DecodedTextMerge::new(source_tables::preserve(
+        input,
         math.events(Parser::new_ext(&math.markdown, options).into_offset_iter()),
-    );
+    ));
     let mut w = Writer::new(input, parser, width, cwd, is_hidden_link_destination);
     w.run();
     w.text
@@ -416,6 +424,7 @@ where
     link: Option<LinkState>,
     needs_newline: bool,
     pending_marker_line: bool,
+    last_task_marker_end: usize,
     in_paragraph: bool,
     in_code_block: bool,
     code_block_lang: Option<String>,
@@ -460,6 +469,7 @@ where
             link: None,
             needs_newline: false,
             pending_marker_line: false,
+            last_task_marker_end: 0,
             in_paragraph: false,
             in_code_block: false,
             code_block_lang: None,
@@ -511,7 +521,16 @@ where
             Event::Html(html) => self.html(html, /*inline*/ false),
             Event::InlineHtml(html) => self.html(html, /*inline*/ true),
             Event::FootnoteReference(_) => {}
-            Event::TaskListMarker(_) => {}
+            Event::TaskListMarker(checked) => {
+                // The parser can emit a recovered empty item's marker in a later paragraph.
+                if range.start >= self.last_task_marker_end {
+                    self.last_task_marker_end = range.end;
+                    self.task_list_marker(checked);
+                    if self.current_line_content.is_none() {
+                        self.push_line(Line::default());
+                    }
+                }
+            }
         }
     }
 
@@ -550,7 +569,39 @@ where
                 self.start_codeblock(lang, indent)
             }
             Tag::List(start) => self.start_list(start),
-            Tag::Item => self.start_item(),
+            Tag::Item => {
+                self.start_item();
+                if let Some((next, next_range)) = self.iter.next() {
+                    // Recover markers consumed without an event before block content or empty items.
+                    let content_start = if matches!(next, Event::End(TagEnd::Item)) {
+                        range.end
+                    } else {
+                        next_range.start
+                    };
+                    if preferences::current().lists
+                        && let Some(prefix) = self.input.get(range.start..content_start)
+                        && let Some(prefix) = prefix.lines().next()
+                        && let Some((_, marker)) = prefix.trim().split_once(char::is_whitespace)
+                        && let Some(checked) = match marker.trim() {
+                            "[ ]" => Some(false),
+                            "[x]" | "[X]" => Some(true),
+                            _ => None,
+                        }
+                    {
+                        self.last_task_marker_end = content_start;
+                        self.task_list_marker(checked);
+                        if matches!(
+                            next,
+                            Event::Start(Tag::List(_) | Tag::HtmlBlock)
+                                | Event::End(TagEnd::Item)
+                                | Event::Rule
+                        ) {
+                            self.push_line(Line::default());
+                        }
+                    }
+                    self.handle_event(next, next_range);
+                }
+            }
             Tag::Emphasis => self.push_inline_style(self.styles.emphasis),
             Tag::Strong => self.push_inline_style(self.styles.strong),
             Tag::Strikethrough => self.push_inline_style(self.styles.strikethrough),
@@ -889,7 +940,12 @@ where
         let marker = if let Some(last_index) = self.list_indices.last_mut() {
             match last_index {
                 None => Some(vec![Span::styled(
-                    " ".repeat(width - 1) + "- ",
+                    " ".repeat(width - 1)
+                        + if preferences::current().lists {
+                            "• "
+                        } else {
+                            "- "
+                        },
                     self.styles.unordered_list_marker,
                 )]),
                 Some(index) => {
@@ -956,7 +1012,8 @@ where
         if let Some(lang) = self.code_block_lang.take() {
             let code = std::mem::take(&mut self.code_block_buffer);
             if !code.is_empty() {
-                let diagram = if lang == "mermaid"
+                let diagram = if preferences::current().mermaid
+                    && lang == "mermaid"
                     && mermaid::has_closing_fence(self.input, range, self.code_block_content_end)
                 {
                     let indent =
@@ -2268,7 +2325,7 @@ mod tests {
         let lines = lines_to_strings(&rendered);
         assert_eq!(
             lines,
-            vec!["- first second".to_string(), "  third fourth".to_string(),]
+            vec!["• first second".to_string(), "  third fourth".to_string(),]
         );
     }
 
@@ -2281,10 +2338,10 @@ mod tests {
         assert_eq!(
             lines,
             vec![
-                "- outer item with".to_string(),
+                "• outer item with".to_string(),
                 "  several words to".to_string(),
                 "  wrap".to_string(),
-                "    - inner item".to_string(),
+                "    • inner item".to_string(),
                 "      that also".to_string(),
                 "      needs wrapping".to_string(),
             ]
@@ -2340,7 +2397,7 @@ mod tests {
         assert_eq!(
             lines,
             vec![
-                "- list item".to_string(),
+                "• list item".to_string(),
                 "  > block quote inside".to_string(),
                 "  > list that wraps".to_string(),
             ]

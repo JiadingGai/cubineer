@@ -95,6 +95,7 @@ pub(super) struct AgentsOverviewRow {
     pub(super) thread_id: ThreadId,
     pub(super) group: AgentsOverviewGroup,
     pub(super) is_current: bool,
+    pub(super) has_voice: bool,
 }
 
 fn display_title(thread: &Thread) -> &str {
@@ -430,7 +431,7 @@ impl AgentsOverviewView {
             if let Some((message, cwd)) = &row.details.last_message {
                 details.extend([Line::default(), "Last message".dim().into()]);
                 crate::markdown::append_markdown(
-                    &crate::markdown::unwrap_markdown_fences(message),
+                    &crate::markdown::normalize_markdown_for_rendering(message),
                     Some(width),
                     Some(cwd.as_path()),
                     &mut details,

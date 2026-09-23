@@ -57,13 +57,8 @@ pub use agent::api::AgentConfigUpdate;
 pub use agent::api::AgentControl;
 pub use agent::api::AgentInfo;
 pub use agent::api::AgentInput;
-pub use agent::api::AgentPage;
-pub use agent::api::AgentQuery;
-pub use agent::api::AgentScope;
 pub use agent::api::AgentTarget;
 pub use agent::api::AgentTurnOutcome;
-pub use agent::api::AgentVisibility;
-pub use agent::api::ControlIdentity;
 pub use agent::api::DeliveryReceipt;
 pub use agent::api::SendRequest;
 pub use agent::api::SpawnRequest;
@@ -78,6 +73,8 @@ pub use agent::types::SpawnAgentForkMode;
 pub use agent::types::SpawnAgentOptions;
 pub use rollout_budget::RolloutBudgetReminder;
 mod agent_communication;
+mod agent_message_board;
+pub use agent_message_board::install_agent_message_board;
 mod attestation;
 mod codex_delegate;
 mod command_canonicalization;
@@ -247,3 +244,4 @@ pub mod otel_init;
 
 // Captured environment bindings can be passed back to ThreadManager by internal reviewers.
 pub use environment_selection::TurnEnvironmentSnapshot;
+pub use environment_selection::validate_environment_ids_and_cwds;

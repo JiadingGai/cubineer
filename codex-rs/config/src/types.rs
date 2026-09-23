@@ -47,6 +47,7 @@ pub use crate::tui_keymap::TuiPagerKeymap;
 pub use crate::tui_keymap::TuiVimNormalKeymap;
 pub use crate::tui_keymap::TuiVimOperatorKeymap;
 pub use crate::tui_keymap::TuiVimSearchKeymap;
+pub use crate::tui_rendering::TuiRendering;
 
 pub const DEFAULT_OTEL_ENVIRONMENT: &str = "dev";
 pub const DEFAULT_MEMORIES_MAX_ROLLOUTS_PER_STARTUP: usize = 2;
@@ -758,6 +759,10 @@ pub struct Tui {
     #[serde(default)]
     pub effects: TuiEffects,
 
+    /// Rich content rendering. Independent of animations and visual effects.
+    #[serde(default)]
+    pub rendering: TuiRendering,
+
     /// Show startup tooltips in the TUI welcome screen.
     /// Defaults to `true`.
     #[serde(default = "default_true")]
@@ -794,8 +799,8 @@ pub struct Tui {
     pub raw_output_mode: bool,
 
     /// Own the fullscreen transcript, including scrolling, selection, and search.
-    /// Defaults to `false`; alternate-screen restrictions take precedence.
-    #[serde(default)]
+    /// Defaults to `true`; alternate-screen restrictions take precedence.
+    #[serde(default = "default_true")]
     pub fullscreen_transcript: bool,
 
     /// Controls whether the TUI uses the terminal's alternate screen buffer.

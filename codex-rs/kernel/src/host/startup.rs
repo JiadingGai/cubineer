@@ -12,8 +12,10 @@ impl Host {
             ("model_provider".into(), args.provider.clone().into()),
             ("features.memories".into(), false.into()),
         ]);
+        let loader_overrides = LoaderOverrides::default();
         let config = ConfigBuilder::default()
             .cli_overrides(overrides.clone())
+            .loader_overrides(loader_overrides.clone())
             .harness_overrides(ConfigOverrides {
                 cwd: Some(args.output.clone()),
                 ..Default::default()
@@ -39,10 +41,11 @@ impl Host {
                 &config.codex_home,
             ),
         );
+        let embedded_network_policy = EmbeddedNetworkPolicy::load(&loader_overrides).await;
         let environment_manager = EnvironmentManager::from_codex_home(
             config.codex_home.clone(),
             Some(runtime_paths),
-            config.http_client_factory(),
+            embedded_network_policy.bind(config.http_client_factory()),
         )
         .await?;
         let state = codex_core::init_state_db(&config).await;
@@ -50,9 +53,10 @@ impl Host {
             arg0_paths: paths,
             config: Arc::new(config),
             cli_overrides: overrides,
-            loader_overrides: LoaderOverrides::default(),
+            loader_overrides,
             strict_config: args.strict_config,
             cloud_config_bundle: CloudConfigBundleLoader::default(),
+            embedded_network_policy,
             feedback: CodexFeedback::new(),
             log_db: None,
             state_db: state.clone(),
