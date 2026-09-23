@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="220" viewBox="0 0 1200 220" role="img" aria-labelledby="title desc">
+  <title id="title">Cubineer</title>
+  <desc id="desc">Codex-based CUDA and SASS kernel optimization</desc>
+  <rect width="1200" height="220" rx="8" fill="#0d1117"/>
+  <text x="600" y="125" fill="#76b900" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800" text-anchor="middle">CUBINEER</text>
+  <text x="600" y="174" fill="#f0f6fc" font-family="Arial, Helvetica, sans-serif" font-size="24" text-anchor="middle">Codex-based CUDA and SASS kernel optimization</text>
+</svg>

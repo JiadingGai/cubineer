@@ -1,3 +1,15 @@
+<p align="center">
+  <img src=".github/cubineer-banner.svg" alt="Cubineer: Codex-based CUDA and SASS kernel optimization" width="100%" />
+</p>
+
+<p align="center">
+  <a href="cubineer/README.md">
+    <img src=".github/cubineer-notice.svg" alt="IMPORTANT: This is the Codex-based Cubineer repository. Start with the Cubineer installation and usage guide." width="100%" />
+  </a>
+</p>
+
+---
+
 <p align="center"><strong>Codex CLI</strong> is a coding agent from OpenAI that runs locally on your computer.
 <p align="center">
   <img src="https://github.com/openai/codex/blob/main/.github/codex-cli-splash.png" alt="Codex CLI splash" width="80%" />
