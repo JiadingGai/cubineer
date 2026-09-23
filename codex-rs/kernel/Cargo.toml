@@ -1,0 +1,43 @@
+[package]
+name = "codex-kernel"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+codex-memories-write = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+codex-app-server-client = { workspace = true }
+codex-app-server-protocol = { workspace = true }
+codex-arg0 = { workspace = true }
+codex-config = { workspace = true }
+codex-core = { workspace = true }
+codex-feedback = { workspace = true }
+codex-kernel-search = { workspace = true }
+codex-protocol = { workspace = true }
+codex-state = { workspace = true }
+codex-utils-cli = { workspace = true }
+codex-utils-template = { workspace = true }
+regex = { workspace = true }
+csv = { workspace = true }
+rustpython-parser = { workspace = true }
+rustpython-ast = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true, features = ["preserve_order"] }
+sha2 = { workspace = true }
+tokio = { workspace = true, features = ["fs", "signal", "time"] }
+toml = { workspace = true }
+walkdir = { workspace = true }
+which = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
+tempfile = { workspace = true }
+
+[[bin]]
+name = "codex-kernel"
+path = "src/main.rs"

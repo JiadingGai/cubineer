@@ -979,6 +979,8 @@ impl MessageProcessor {
 
         let (turn_admission, recheck_turn_admission) = match &codex_request {
             ClientRequest::ThreadStart { .. }
+            | ClientRequest::ThreadStartChild { .. }
+            | ClientRequest::ThreadCloseChild { .. }
             | ClientRequest::ThreadFork { .. }
             | ClientRequest::ThreadResume { .. }
             | ClientRequest::ThreadRevert { .. }
@@ -1276,6 +1278,21 @@ impl MessageProcessor {
                         request_context,
                     )
                     .await
+            }
+            ClientRequest::ThreadStartChild { params, .. } => {
+                self.thread_processor
+                    .thread_start_child(
+                        request_id.clone(),
+                        params,
+                        app_server_client_name.clone(),
+                        client_version.clone(),
+                        client_mcp_extensions.clone(),
+                        request_context,
+                    )
+                    .await
+            }
+            ClientRequest::ThreadCloseChild { params, .. } => {
+                self.thread_processor.thread_close_child(params).await
             }
             ClientRequest::ThreadUnsubscribe { params, .. } => {
                 let thread_id = params.thread_id.clone();

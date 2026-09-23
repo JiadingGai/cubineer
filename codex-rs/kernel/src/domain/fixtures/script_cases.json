@@ -1,0 +1,56 @@
+[
+  {
+    "name": "reference",
+    "values": {
+      "reference": "import torch\nclass Model:\n    \"\"\"Reference docstring.\"\"\"\n    pass\n",
+      "inputs": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "seed": "42",
+      "solution_file": "/tmp/solution.py",
+      "solution_path": "/tmp/solution.py",
+      "num_warmup": "5",
+      "num_trials": "5",
+      "num_iterations": "1",
+      "output_name": "benchmark_solution.py",
+      "reference_file_path_str": "/tmp/reference.py",
+      "clean_input_gen": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "solution_name": "solution.py"
+    },
+    "sha256": "a8ce538e6adf343f0ab89e0da1c9256ea61f9292b91aee14e9a5ae14031d79b5"
+  },
+  {
+    "name": "candidate",
+    "values": {
+      "reference": "import torch\nclass Model:\n    \"\"\"Reference docstring.\"\"\"\n    pass\n",
+      "inputs": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "seed": "42",
+      "solution_file": "/tmp/solution.py",
+      "solution_path": "/tmp/solution.py",
+      "num_warmup": "5",
+      "num_trials": "5",
+      "num_iterations": "1",
+      "output_name": "benchmark_solution.py",
+      "reference_file_path_str": "/tmp/reference.py",
+      "clean_input_gen": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "solution_name": "solution.py"
+    },
+    "sha256": "cb8e5611e359477f4dcd4c5dd4586a57fccb7aad844ab31933816e8c3dfbe312"
+  },
+  {
+    "name": "benchmark",
+    "values": {
+      "reference": "import torch\nclass Model:\n    \"\"\"Reference docstring.\"\"\"\n    pass\n",
+      "inputs": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "seed": "42",
+      "solution_file": "/tmp/solution.py",
+      "solution_path": "/tmp/solution.py",
+      "num_warmup": "5",
+      "num_trials": "5",
+      "num_iterations": "1",
+      "output_name": "benchmark_solution.py",
+      "reference_file_path_str": "/tmp/reference.py",
+      "clean_input_gen": "def get_inputs(): return []\ndef get_init_inputs(): return []\n",
+      "solution_name": "solution.py"
+    },
+    "sha256": "9f32b1d4acbb40deff0ce47ed4da606d9ed57ea17f6634e8a75ea5a08792ab77"
+  }
+]

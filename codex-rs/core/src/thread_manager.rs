@@ -108,6 +108,8 @@ use tracing::instrument;
 use tracing::warn;
 
 const THREAD_CREATED_CHANNEL_CAPACITY: usize = 1024;
+
+mod controller_child;
 // Reject pathological selected cwd values at the environment-selection boundary.
 const MAX_TURN_ENVIRONMENT_CWD_BYTES: usize = 8 * 1024;
 
@@ -1860,6 +1862,7 @@ impl ThreadManagerState {
             /*inherited_environments*/ None,
             /*inherited_exec_policy*/ None,
             /*environments*/ None,
+            /*startup*/ None,
         ))
         .await
     }
@@ -1878,17 +1881,23 @@ impl ThreadManagerState {
         inherited_environments: Option<TurnEnvironmentSnapshot>,
         inherited_exec_policy: Option<Arc<crate::exec_policy::ExecPolicyManager>>,
         environments: Option<Vec<TurnEnvironmentSelection>>,
+        startup: Option<StartThreadOptions>,
     ) -> CodexResult<NewThread> {
         let client_mcp_extensions = self.client_mcp_extensions_for_child(parent_thread_id).await;
-        let options = StartThreadOptions {
-            history_mode,
-            session_source: Some(session_source),
-            thread_source,
-            metrics_service_name,
-            environments,
-            client_mcp_extensions,
-            ..StartThreadOptions::new(config)
-        };
+        let mut options = startup
+            .map(|mut options| {
+                options.thread_source = Some(ThreadSource::Subagent);
+                options
+            })
+            .unwrap_or_else(|| StartThreadOptions {
+                history_mode,
+                thread_source,
+                metrics_service_name,
+                environments,
+                client_mcp_extensions,
+                ..StartThreadOptions::new(config)
+            });
+        options.session_source = Some(session_source);
         let mut request =
             ThreadSpawnRequest::new(options, Arc::clone(&self.auth_manager), agent_control);
         request.parent_thread_id = parent_thread_id;

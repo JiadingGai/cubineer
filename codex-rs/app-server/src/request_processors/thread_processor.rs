@@ -533,6 +533,7 @@ impl ThreadRequestProcessor {
         self.thread_start_inner(
             request_id,
             params,
+            /*controller_parent*/ None,
             app_server_client_name,
             app_server_client_version,
             client_mcp_extensions,
@@ -540,6 +541,47 @@ impl ThreadRequestProcessor {
         )
         .await
         .map(|()| None)
+    }
+
+    pub(crate) async fn thread_start_child(
+        &self,
+        request_id: ConnectionRequestId,
+        params: codex_app_server_protocol::ThreadStartChildParams,
+        app_server_client_name: Option<String>,
+        app_server_client_version: Option<String>,
+        client_mcp_extensions: ClientMcpExtensions,
+        request_context: RequestContext,
+    ) -> Result<Option<ClientResponsePayload>, JSONRPCErrorError> {
+        let parent = ThreadId::from_string(&params.parent_thread_id)
+            .map_err(|error| invalid_request(error.to_string()))?;
+        self.thread_start_inner(
+            request_id,
+            params.startup.into(),
+            Some(parent),
+            app_server_client_name,
+            app_server_client_version,
+            client_mcp_extensions,
+            request_context,
+        )
+        .await
+        .map(|()| None)
+    }
+
+    pub(crate) async fn thread_close_child(
+        &self,
+        params: codex_app_server_protocol::ThreadCloseChildParams,
+    ) -> Result<Option<ClientResponsePayload>, JSONRPCErrorError> {
+        let parent = ThreadId::from_string(&params.parent_thread_id)
+            .map_err(|error| invalid_request(error.to_string()))?;
+        let child = ThreadId::from_string(&params.thread_id)
+            .map_err(|error| invalid_request(error.to_string()))?;
+        self.thread_manager
+            .close_controller_child(parent, child)
+            .await
+            .map_err(|error| invalid_request(error.to_string()))?;
+        Ok(Some(
+            codex_app_server_protocol::ThreadCloseChildResponse {}.into(),
+        ))
     }
 
     pub(crate) async fn thread_unsubscribe(
@@ -1122,10 +1164,12 @@ impl ThreadRequestProcessor {
         .await
     }
 
+    #[allow(clippy::too_many_arguments)]
     async fn thread_start_inner(
         &self,
         request_id: ConnectionRequestId,
         params: ThreadStartParams,
+        controller_parent: Option<ThreadId>,
         app_server_client_name: Option<String>,
         app_server_client_version: Option<String>,
         client_mcp_extensions: ClientMcpExtensions,
@@ -1233,6 +1277,7 @@ impl ThreadRequestProcessor {
                 thread_store,
                 config_manager,
                 request_id,
+                controller_parent,
                 app_server_client_name,
                 app_server_client_version,
                 client_mcp_extensions,
@@ -1315,6 +1360,7 @@ impl ThreadRequestProcessor {
         thread_store: Arc<dyn ThreadStore>,
         config_manager: ConfigManager,
         request_id: ConnectionRequestId,
+        controller_parent: Option<ThreadId>,
         app_server_client_name: Option<String>,
         app_server_client_version: Option<String>,
         client_mcp_extensions: ClientMcpExtensions,
@@ -1483,32 +1529,46 @@ impl ThreadRequestProcessor {
         };
         start_options.reserved_thread_id = reserved_thread_id;
         let create_thread_started_at = std::time::Instant::now();
-        let new_thread = listener_task_context
-            .thread_manager
-            .start_thread(StartThreadOptions {
-                allow_provider_model_fallback,
-                initial_history: match session_start_source
-                    .unwrap_or(codex_app_server_protocol::ThreadStartSource::Startup)
-                {
-                    codex_app_server_protocol::ThreadStartSource::Startup => InitialHistory::New,
-                    codex_app_server_protocol::ThreadStartSource::Clear => InitialHistory::Cleared,
-                },
-                history_mode,
-                thread_source,
-                dynamic_tools,
-                metrics_service_name: service_name,
-                parent_trace: request_trace,
-                environments: Some(environments),
-                thread_extension_init,
-                client_mcp_extensions,
-                ..start_options
-            })
-            .instrument(tracing::info_span!(
-                "app_server.thread_start.create_thread",
-                otel.name = "app_server.thread_start.create_thread",
-                thread_start.dynamic_tool_count = dynamic_tool_count,
-            ))
-            .await;
+        let start_options = StartThreadOptions {
+            allow_provider_model_fallback,
+            initial_history: match session_start_source
+                .unwrap_or(codex_app_server_protocol::ThreadStartSource::Startup)
+            {
+                codex_app_server_protocol::ThreadStartSource::Startup => InitialHistory::New,
+                codex_app_server_protocol::ThreadStartSource::Clear => InitialHistory::Cleared,
+            },
+            history_mode,
+            thread_source,
+            dynamic_tools,
+            metrics_service_name: service_name,
+            parent_trace: request_trace,
+            environments: Some(environments),
+            thread_extension_init,
+            client_mcp_extensions,
+            ..start_options
+        };
+        let new_thread = async {
+            match controller_parent {
+                Some(parent) => {
+                    listener_task_context
+                        .thread_manager
+                        .start_controller_child(parent, start_options)
+                        .await
+                }
+                None => {
+                    listener_task_context
+                        .thread_manager
+                        .start_thread(start_options)
+                        .await
+                }
+            }
+        }
+        .instrument(tracing::info_span!(
+            "app_server.thread_start.create_thread",
+            otel.name = "app_server.thread_start.create_thread",
+            thread_start.dynamic_tool_count = dynamic_tool_count,
+        ))
+        .await;
         let NewThread {
             thread_id,
             thread,
@@ -1620,6 +1680,16 @@ impl ThreadRequestProcessor {
             active_permission_profile,
             reasoning_effort: config_snapshot.reasoning_effort,
             multi_agent_mode: MultiAgentMode::ExplicitRequestOnly,
+        };
+        let response: ClientResponsePayload = if controller_parent.is_some() {
+            codex_app_server_protocol::ThreadStartChildResponse {
+                thread: response.thread,
+                model: response.model,
+                model_provider: response.model_provider,
+            }
+            .into()
+        } else {
+            response.into()
         };
         let notif = thread_started_notification(thread);
         listener_task_context

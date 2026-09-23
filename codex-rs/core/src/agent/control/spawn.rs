@@ -43,6 +43,7 @@ struct SpawnAgentThreadInheritance {
 /// unrepresentable.
 #[allow(clippy::large_enum_variant)]
 enum SpawnInitialInput {
+    Controller(Option<Box<crate::thread_manager::StartThreadOptions>>),
     UserInput(Vec<UserInput>),
     InterAgentCommunication(InterAgentCommunication, AgentCommunicationContext),
 }
@@ -264,7 +265,7 @@ impl LocalAgentControl {
             SpawnAgentOptions::default(),
         ))
         .await?;
-        Ok(spawned_agent.thread_id)
+        Ok(spawned_agent.0.thread_id)
     }
 
     /// Spawn an agent thread with some metadata.
@@ -282,6 +283,7 @@ impl LocalAgentControl {
             options,
         ))
         .await
+        .map(|(agent, _)| agent)
     }
 
     pub(crate) async fn spawn_agent_with_communication(
@@ -299,6 +301,32 @@ impl LocalAgentControl {
             options,
         ))
         .await
+        .map(|(agent, _)| agent)
+    }
+
+    pub(crate) async fn spawn_controller_agent(
+        &self,
+        startup: crate::thread_manager::StartThreadOptions,
+        parent_thread_id: ThreadId,
+    ) -> CodexResult<crate::thread_manager::NewThread> {
+        let config = startup.config.clone();
+        Box::pin(self.spawn_agent_internal(
+            config,
+            SpawnInitialInput::Controller(Some(Box::new(startup))),
+            Some(SessionSource::SubAgent(SubAgentSource::ThreadSpawn {
+                parent_thread_id,
+                depth: 1,
+                agent_path: None,
+                agent_nickname: None,
+                agent_role: None,
+            })),
+            SpawnAgentOptions {
+                parent_thread_id: Some(parent_thread_id),
+                ..Default::default()
+            },
+        ))
+        .await
+        .map(|(_, thread)| thread)
     }
 
     fn validate_loaded_v2_child(
@@ -632,10 +660,10 @@ impl LocalAgentControl {
     async fn spawn_agent_internal(
         &self,
         config: Config,
-        initial_input: SpawnInitialInput,
+        mut initial_input: SpawnInitialInput,
         session_source: Option<SessionSource>,
         options: SpawnAgentOptions,
-    ) -> CodexResult<LiveAgent> {
+    ) -> CodexResult<(LiveAgent, crate::thread_manager::NewThread)> {
         let state = self.upgrade()?;
         let multi_agent_version = state
             .effective_multi_agent_version_for_spawn(
@@ -669,9 +697,12 @@ impl LocalAgentControl {
         };
         let mut reservation = self.state.reserve_spawn_slot(reservation_max_threads)?;
         let inheritance = SpawnAgentThreadInheritance {
-            environments: self
-                .inherited_environments_for_source(&state, session_source.as_ref())
-                .await,
+            environments: if matches!(initial_input, SpawnInitialInput::Controller(_)) {
+                None
+            } else {
+                self.inherited_environments_for_source(&state, session_source.as_ref())
+                    .await
+            },
             exec_policy: self
                 .inherited_exec_policy_for_source(&state, session_source.as_ref(), &config)
                 .await,
@@ -736,6 +767,13 @@ impl LocalAgentControl {
                     inheritance.environments,
                     inheritance.exec_policy,
                     options.environments.clone(),
+                    match &mut initial_input {
+                        SpawnInitialInput::Controller(startup) => {
+                            startup.take().map(|startup| *startup)
+                        }
+                        SpawnInitialInput::UserInput(_)
+                        | SpawnInitialInput::InterAgentCommunication(..) => None,
+                    },
                 ))
                 .await?
             }
@@ -800,6 +838,7 @@ impl LocalAgentControl {
             ..Default::default()
         };
         match initial_input {
+            SpawnInitialInput::Controller(_) => {}
             SpawnInitialInput::UserInput(input) => {
                 self.send_input(new_thread.thread_id, input, start_options)
                     .await?;
@@ -829,11 +868,14 @@ impl LocalAgentControl {
             );
         }
 
-        Ok(LiveAgent {
-            thread_id: new_thread.thread_id,
-            metadata: agent_metadata,
-            status: self.get_status(new_thread.thread_id).await,
-        })
+        Ok((
+            LiveAgent {
+                thread_id: new_thread.thread_id,
+                metadata: agent_metadata,
+                status: self.get_status(new_thread.thread_id).await,
+            },
+            new_thread,
+        ))
     }
 
     async fn spawn_forked_thread(

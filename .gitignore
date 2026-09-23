@@ -53,6 +53,8 @@ yarn-error.log*
 .env*
 !.env.example
 .venv/
+/venv/
+/cubineer/runs/
 
 # package
 *.tgz

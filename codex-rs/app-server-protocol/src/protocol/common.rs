@@ -553,9 +553,21 @@ client_request_definitions! {
         response: v2::UserVerificationCancelResponse,
     },
 
-    /// NEW APIs
     // Thread lifecycle
+    #[experimental("thread/closeChild")]
+    ThreadCloseChild => "thread/closeChild" {
+        params: v2::ThreadCloseChildParams,
+        serialization: thread_id(params.parent_thread_id),
+        response: v2::ThreadCloseChildResponse,
+    },
+    #[experimental("thread/startChild")]
+    ThreadStartChild => "thread/startChild" {
+        params: v2::ThreadStartChildParams,
+        serialization: thread_id(params.parent_thread_id),
+        response: v2::ThreadStartChildResponse,
+    },
     // Uses `inspect_params` because only some fields are experimental.
+    /// NEW APIs
     ThreadStart => "thread/start" {
         params: v2::ThreadStartParams,
         inspect_params: true,

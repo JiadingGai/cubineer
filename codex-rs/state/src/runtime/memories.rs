@@ -26,6 +26,8 @@ const PHASE2_INPUT_SELECTION_PAGE_SIZE: usize = 512;
 
 const DEFAULT_RETRY_REMAINING: i64 = 3;
 
+mod search;
+
 /// Store for generated memory state and memory extraction/consolidation jobs.
 #[derive(Clone)]
 pub struct MemoryStore {
@@ -65,6 +67,7 @@ impl MemoryStore {
 
         let now = Utc::now().timestamp();
         let mut tx = self.pool.begin().await?;
+
         let mut updated_rows = 0;
 
         for thread_id in thread_ids {
@@ -298,6 +301,14 @@ FROM threads
         let now = Utc::now().timestamp();
         let thread_id = thread_id.to_string();
         let mut tx = self.pool.begin().await?;
+        sqlx::query("DELETE FROM search_memory_snapshots WHERE run_id = ?")
+            .bind(&thread_id)
+            .execute(&mut *tx)
+            .await?;
+        sqlx::query("DELETE FROM jobs WHERE kind = 'kernel_search_extract' AND job_key LIKE ?")
+            .bind(format!("{thread_id}:%"))
+            .execute(&mut *tx)
+            .await?;
 
         let existing_output = sqlx::query(
             r#"
@@ -1429,6 +1440,12 @@ WHERE kind = ? AND job_key = ?
 
 pub(super) async fn clear_memory_data_in_pool(pool: &SqlitePool) -> anyhow::Result<()> {
     let mut tx = pool.begin().await?;
+    sqlx::query("DELETE FROM search_memory_snapshots")
+        .execute(&mut *tx)
+        .await?;
+    sqlx::query("DELETE FROM jobs WHERE kind = 'kernel_search_extract'")
+        .execute(&mut *tx)
+        .await?;
     sqlx::query("UPDATE consolidation_progress SET max_thread_count = 0")
         .execute(&mut *tx)
         .await?;

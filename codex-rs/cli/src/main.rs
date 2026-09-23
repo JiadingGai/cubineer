@@ -148,6 +148,8 @@ struct MultitoolCli {
 
 #[derive(Debug, clap::Subcommand)]
 enum Subcommand {
+    /// Optimize kernels with evaluator-scored MCTS or greedy search.
+    Kernel(codex_kernel::KernelCli),
     /// Browse all agent sessions on the shared local app-server daemon.
     Agents(AgentsCommand),
 
@@ -1288,6 +1290,16 @@ async fn cli_main(
         }
         Some(Subcommand::TcpTunnel(args)) => {
             return codex_tcp_tunnel::run(args).await;
+        }
+        Some(Subcommand::Kernel(mut cli)) => {
+            reject_remote_mode_for_subcommand(
+                root_remote.as_deref(),
+                root_remote_auth_token_env.as_deref(),
+                "kernel",
+            )?;
+            let codex_kernel::KernelCommand::Optimize(args) = &mut cli.command;
+            args.strict_config |= root_strict_config;
+            codex_kernel::run(cli, arg0_paths.clone(), root_config_overrides.clone()).await?;
         }
         Some(Subcommand::Exec(mut exec_cli)) => {
             reject_remote_mode_for_subcommand(
@@ -2705,6 +2717,7 @@ fn unsupported_subcommand_name_for_strict_config(
         Some(Subcommand::StdioToUds(_)) => Some("stdio-to-uds"),
         Some(Subcommand::Features(_)) => Some("features"),
         Some(Subcommand::TcpTunnel(_)) => Some("tcp-tunnel"),
+        Some(Subcommand::Kernel(_)) => Some("kernel"),
     }
 }
 
@@ -3143,6 +3156,27 @@ mod tests {
     use codex_protocol::ThreadId;
     use codex_tui::TokenUsage;
     use pretty_assertions::assert_eq;
+
+    #[test]
+    fn kernel_optimization_help() {
+        let mut command = MultitoolCli::command();
+        let kernel = command
+            .find_subcommand_mut("kernel")
+            .expect("kernel command");
+        let optimize = kernel
+            .find_subcommand_mut("optimize")
+            .expect("optimize command");
+        let help = optimize.render_long_help().to_string();
+        for flag in [
+            "--dataset-root",
+            "--strategy",
+            "--evaluator",
+            "--profiling",
+            "--ncu-full",
+        ] {
+            assert!(help.contains(flag), "missing {flag}");
+        }
+    }
 
     #[test]
     fn interactive_tui_future_stays_bounded() {

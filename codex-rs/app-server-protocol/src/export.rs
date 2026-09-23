@@ -49,6 +49,7 @@ const EXPERIMENTAL_CLIENT_METHOD_DEPENDENCY_TYPES: &[&str] = &[
     "AwsCredentialType",
     "BedrockAwsProfile",
     "BedrockEnvironmentCredential",
+    "ControllerChildStartupParams",
     "EnvironmentShellInfo",
     "EnvironmentStatusKind",
     "RemoteControlClient",

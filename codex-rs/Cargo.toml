@@ -74,6 +74,8 @@ members = [
     "ext/web-search",
     "external-agent-migration",
     "keyring-store",
+    "kernel-search",
+    "kernel",
     "file-search",
     "file-watcher",
     "linux-sandbox",
@@ -232,6 +234,8 @@ codex-guardian-context = { path = "guardian-context" }
 codex-hooks = { path = "hooks" }
 codex-history = { path = "history" }
 codex-keyring-store = { path = "keyring-store" }
+codex-kernel-search = { path = "kernel-search" }
+codex-kernel = { path = "kernel" }
 codex-linux-sandbox = { path = "linux-sandbox" }
 codex-lmstudio = { path = "lmstudio" }
 codex-login = { path = "login" }
@@ -510,6 +514,9 @@ tracing-subscriber = "0.3.22"
 tracing-test = "0.2.5"
 tonic = { version = "0.14.3", default-features = false, features = ["channel", "codegen"] }
 tonic-prost = "0.14.3"
+rustpython-parser = { version = "0.4.0", default-features = false, features = ["num-bigint"] }
+csv = "1.4.0"
+rustpython-ast = { version = "0.4.0", default-features = false, features = ["num-bigint", "visitor"] }
 tree-sitter = "0.25.10"
 tree-sitter-bash = "0.25"
 tree-sitter-powershell = "=0.26.4"
