@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="132" viewBox="0 0 1200 132" role="img" aria-labelledby="title desc">
+  <title id="title">Important Cubineer repository notice</title>
+  <desc id="desc">This is the Codex-based Cubineer repository. Start with the Cubineer installation and usage guide.</desc>
+  <rect x="2" y="2" width="1196" height="128" rx="8" fill="#fff1f2" stroke="#ef4444" stroke-width="4"/>
+  <text x="600" y="56" fill="#b91c1c" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="800" text-anchor="middle">IMPORTANT: This is the Codex-based Cubineer repository.</text>
+  <text x="600" y="100" fill="#dc2626" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="middle" text-decoration="underline">Start with the Cubineer installation and usage guide.</text>
+</svg>
