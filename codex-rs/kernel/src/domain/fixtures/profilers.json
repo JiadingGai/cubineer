@@ -1,0 +1,72 @@
+{
+  "metrics": {
+    "compute": [
+      "sm__inst_executed_pipe_tensor.avg.pct_of_peak_sustained_active",
+      "sm__inst_executed_pipe_fp32.avg.pct_of_peak_sustained_active",
+      "sm__cycles_active.avg",
+      "sm__warps_active.avg.pct_of_peak_sustained_active",
+      "sm__inst_executed.sum",
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+      "sm__pipe_fma_cycles_active.avg.pct_of_peak_sustained_elapsed"
+    ],
+    "memory": [
+      "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+      "dram__bytes.sum.per_second",
+      "dram__bytes_read.sum",
+      "dram__bytes_write.sum",
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed",
+      "l1tex__t_sector_hit_rate.pct",
+      "l1tex__throughput.avg.pct_of_peak_sustained_active",
+      "lts__t_sector_hit_rate.pct",
+      "lts__throughput.avg.pct_of_peak_sustained_active",
+      "l2__throughput.avg.pct_of_peak_sustained_elapsed",
+      "l1tex__average_t_sectors_per_request_pipe_lsu_mem_global_op_ld.ratio",
+      "l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum",
+      "l1tex__t_sectors_pipe_lsu_mem_local_op_st.sum",
+      "l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum",
+      "l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum",
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum"
+    ],
+    "occupancy": [
+      "launch__registers_per_thread",
+      "launch__occupancy_limit_registers",
+      "launch__occupancy_limit_shared_mem",
+      "launch__occupancy_limit_blocks",
+      "smsp__issue_active.avg.pct_of_peak_sustained_active",
+      "smsp__warps_eligible.avg.per_cycle_active"
+    ],
+    "stall": [
+      "smsp__warp_issue_stalled_memory_dependency_per_warp_active.pct",
+      "smsp__warp_issue_stalled_short_scoreboard_per_warp_active.pct",
+      "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+      "smsp__warp_issue_stalled_barrier_per_warp_active.pct",
+      "smsp__warp_issue_stalled_branch_resolving_per_warp_active.pct",
+      "smsp__warp_issue_stalled_wait_per_warp_active.pct",
+      "smsp__warp_issue_stalled_not_selected_per_warp_active.pct",
+      "smsp__warp_issue_stalled_mio_throttle_per_warp_active.pct"
+    ],
+    "timing": [
+      "gpu__time_duration.sum"
+    ],
+    "branch": [
+      "smsp__sass_average_branch_targets_threads_uniform.pct"
+    ]
+  },
+  "sass_patterns": {
+    "wgmma": "\\bWGMMA\\b",
+    "hmma": "\\bHMMA\\b",
+    "imma": "\\bIMMA\\b",
+    "dmma": "\\bDMMA\\b",
+    "bmma": "\\bBMMA\\b",
+    "ldg": "\\bLDG\\b",
+    "stg": "\\bSTG\\b",
+    "lds": "\\bLDS\\b",
+    "sts": "\\bSTS\\b",
+    "cp_async": "\\bLDGSTS\\b|\\bCP\\.ASYNC\\b",
+    "tma": "\\bUTMALOAD\\b|\\bUTMASTORE\\b|\\bTMA\\b",
+    "ffma": "\\bFFMA\\b",
+    "hfma": "\\bHFMA2?\\b",
+    "stl": "\\bSTL\\b",
+    "ldl": "\\bLDL\\b"
+  }
+}

@@ -144,12 +144,30 @@ pub fn build_stage_one_input_message(
         TruncationPolicy::Tokens(rollout_token_limit),
     );
 
+    render_stage_one_input(rollout_path, rollout_cwd, &truncated_rollout_contents)
+}
+
+/// Render explicitly scoped extraction evidence with a small, byte-bounded budget.
+pub fn build_scoped_input_message(
+    rollout_path: &Path,
+    rollout_cwd: &Path,
+    contents: &str,
+) -> anyhow::Result<String> {
+    let contents = truncate_text(contents, TruncationPolicy::Bytes(7_000));
+    render_stage_one_input(rollout_path, rollout_cwd, &contents)
+}
+
+fn render_stage_one_input(
+    rollout_path: &Path,
+    rollout_cwd: &Path,
+    contents: &str,
+) -> anyhow::Result<String> {
     let rollout_path = rollout_path.display().to_string();
     let rollout_cwd = rollout_cwd.display().to_string();
     Ok(STAGE_ONE_INPUT_TEMPLATE.render([
         ("rollout_path", rollout_path.as_str()),
         ("rollout_cwd", rollout_cwd.as_str()),
-        ("rollout_contents", truncated_rollout_contents.as_str()),
+        ("rollout_contents", contents),
     ])?)
 }
 

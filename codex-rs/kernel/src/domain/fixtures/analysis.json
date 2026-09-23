@@ -1,0 +1,3 @@
+{
+  "rules_header": "## \u26a0\ufe0f NCU RULE ENGINE \u2014 RANKED BOTTLENECKS (DETERMINISTIC, address #1 FIRST)\n\nThese are NVIDIA Nsight Compute's own rule-engine findings, sorted by estimated speedup (highest impact first). Treat #1 as the primary target. Do NOT pursue a lower-ranked lever until the higher-ranked ones are resolved or proven not applicable.\n"
+}

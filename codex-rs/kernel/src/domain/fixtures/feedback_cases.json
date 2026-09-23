@@ -1,0 +1,274 @@
+[
+  {
+    "input": {
+      "parent": null
+    },
+    "result": {
+      "text": ""
+    }
+  },
+  {
+    "input": {
+      "parent": null,
+      "hint": "Keep FP32 accumulation"
+    },
+    "result": {
+      "text": "\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep FP32 accumulation**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {}
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\nNo details\n```\n\n\n**General Error:** Review the error message and traceback carefully.\n\n**How to fix:**\n- Identify the specific line causing the error\n- Check the error type and message for clues\n- Review related code sections\n- Test with simpler inputs if possible\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: No details\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_type": "correctness_error",
+            "error_message": "mismatch"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** correctness_error\n**Error Stage:** unknown\n\n**Error Message:**\n```\nmismatch\n```\n\n\n**This means:** The CUDA kernel executed successfully but produced incorrect results.\n\n**Common causes:**\n- Incorrect indexing or stride calculations\n- Race conditions (missing `__syncthreads()`)\n- Floating-point precision issues\n- Wrong reduction logic in parallel operations\n- Off-by-one errors in loop bounds\n\n**How to fix:**\n- Verify your algorithm matches the reference implementation\n- Check all array indexing carefully\n- Add `__syncthreads()` after shared memory writes\n- Ensure proper numerical stability\n- Test with simple inputs first\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: mismatch\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_message": "CUDA misaligned address"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\nCUDA misaligned address\n```\n\n\n**This means:** Memory access is not properly aligned.\n\n**Common causes:**\n- Incorrect pointer arithmetic\n- Wrong data type size assumptions\n- Unaligned shared memory declarations\n- Improper casting of pointers\n\n**How to fix:**\n- Use `__align__(N)` directive for shared memory declarations\n- Check that pointer arithmetic respects element sizes\n- Verify all memory accesses are properly aligned\n- Review stride calculations and offsets\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: CUDA misaligned address\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_message": "cuda launch failed"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\ncuda launch failed\n```\n\n\n**This means:** Kernel failed to launch or crashed immediately.\n\n**Common causes:**\n- Invalid grid/block dimensions (blockDim.x * blockDim.y * blockDim.z > 1024)\n- Excessive shared memory usage (> 48KB)\n- Too many registers per thread (> 255)\n- Invalid kernel parameters or arguments\n\n**How to fix:**\n- Verify grid and block dimensions are valid\n- Reduce shared memory usage or use dynamic allocation\n- Simplify kernel to reduce register pressure\n- Check all kernel parameters are valid\n- Ensure no stack overflow from large local arrays\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: cuda launch failed\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_message": "CUDA illegal address"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\nCUDA illegal address\n```\n\n\n**This means:** CUDA encountered a runtime error during execution.\n\n**Common causes:**\n- Out-of-bounds memory accesses\n- Division by zero or invalid operations\n- Incorrect synchronization\n- Resource exhaustion\n\n**How to fix:**\n- Add bounds checking for all array accesses\n- Verify grid/block dimensions match data size\n- Check for NULL pointers or uninitialized memory\n- Ensure `__syncthreads()` is not in conditional branches\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: CUDA illegal address\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_type": "SyntaxError"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** SyntaxError\n**Error Stage:** unknown\n\n**Error Message:**\n```\nNo details\n```\n\n\n**This means:** Python/CUDA code has syntax errors.\n\n**Common causes:**\n- Typos in variable names or keywords\n- Missing colons, parentheses, or brackets\n- Incorrect indentation\n- Using undefined variables or functions\n- Invalid CUDA syntax\n\n**How to fix:**\n- Carefully review the line indicated in the error\n- Check for basic Python/CUDA syntax correctness\n- Ensure all variables are defined before use\n- Verify proper indentation (Python is indent-sensitive)\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: No details\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_type": "ImportError"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** ImportError\n**Error Stage:** unknown\n\n**Error Message:**\n```\nNo details\n```\n\n\n**This means:** Required module or package could not be imported.\n\n**Common causes:**\n- Missing import statements\n- Incorrect module names\n- Package not installed\n- Circular import dependencies\n\n**How to fix:**\n- Add necessary import statements\n- Verify module names are correct\n- Check package availability\n- Review import order\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: No details\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "traceback": "tracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetrace"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\nNo details\n```\n\n**Traceback:**\n```\ntracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetracetrace\n```\n\n\n**General Error:** Review the error message and traceback carefully.\n\n**How to fix:**\n- Identify the specific line causing the error\n- Check the error type and message for clues\n- Review related code sections\n- Test with simpler inputs if possible\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: No details\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "error_summary": "summary",
+            "error_message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Analysis (LLM-summarized root cause):**\nsummary\n\n**Raw Error (abbreviated):**\n```\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n```\n\n\n**General Error:** Review the error message and traceback carefully.\n\n**How to fix:**\n- Identify the specific line causing the error\n- Check the error type and message for clues\n- Review related code sections\n- Test with simpler inputs if possible\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "failed",
+          "error_context": {
+            "traceback": "static assertion failed with \"tile shape\"\nerror: bad tile\ncopy_traits"
+          }
+        }
+      },
+      "hint": "Keep shape"
+    },
+    "result": {
+      "text": "\n## \u26a0\ufe0f Previous Solution Failed\n\n**Error Type:** Unknown\n**Error Stage:** unknown\n\n**Error Message:**\n```\nNo details\n```\n\n**CuTe Compilation Error Analysis:**\n**Root cause (static_assert):**\n- tile shape\n**Compiler errors:**\n```\nerror: bad tile\n```\n\n**Full compiler output (last 2000 chars):**\n```\nstatic assertion failed with \"tile shape\"\nerror: bad tile\ncopy_traits\n```\n\n\n**General Error:** Review the error message and traceback carefully.\n\n**How to fix:**\n- Identify the specific line causing the error\n- Check the error type and message for clues\n- Review related code sections\n- Test with simpler inputs if possible\n\n\n**Your Previous Code (that failed):**\n```python\ncandidate\n```\n\n**Task:** Generate a corrected implementation that fixes the specific error above.\nFocus on addressing: No details\n\n\n\n\n## \ud83e\uddd1\u200d\ufffd HUMAN EXPERT GUIDANCE (HIGHEST PRIORITY)\n\nA human expert has reviewed your recent failures and provides this guidance:\n\n**Keep shape**\n\n\u26a0\ufe0f This guidance takes PRIORITY over other optimization recommendations.\nFollow it carefully \u2014 the human has identified a pattern the automated\nsystem missed.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "success"
+        },
+        "analysis": {}
+      }
+    },
+    "result": {
+      "text": "candidate"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "success"
+        },
+        "analysis": {
+          "summary": "unused"
+        }
+      }
+    },
+    "result": {
+      "text": "\n## \ud83d\udcca Performance Optimization Opportunity\n\nYour previous solution was **correct** and functional, but profiling with NVIDIA Nsight Compute has identified performance bottlenecks:\n\n**Identified Bottleneck:** Unknown\n**Severity:** Unknown\n**Priority Score:** 0.0/10\n**Estimated Improvement Potential:** 0.0x speedup\n\n**Optimization Recommendations:**\nNo specific recommendations available.\n\n**Your Previous Code:**\n```python\ncandidate\n```\n\n**Task:** Generate an optimized implementation that addresses these bottlenecks while maintaining correctness.\nFocus on the highest-priority recommendations to maximize performance improvement.\n"
+    }
+  },
+  {
+    "input": {
+      "parent": {
+        "submission": {
+          "code": "candidate"
+        },
+        "outcome": {
+          "status": "success"
+        },
+        "analysis": {
+          "bottleneck_type": "memory",
+          "priority_score": 0.7,
+          "estimated_improvement": 2.3,
+          "optimization_recommendations": [
+            "Coalesce",
+            "Tile"
+          ],
+          "detailed_analysis": "details",
+          "rule_recommendations": [
+            {
+              "est_speedup_pct": 70,
+              "text": "Loads"
+            }
+          ]
+        }
+      }
+    },
+    "result": {
+      "text": "\n## \ud83d\udcca Performance Optimization Opportunity\n\nYour previous solution was **correct** and functional, but profiling with NVIDIA Nsight Compute has identified performance bottlenecks:\n\n## \u26a0\ufe0f NCU RULE ENGINE \u2014 RANKED BOTTLENECKS (ADDRESS #1 FIRST)\n\nThe following are NVIDIA Nsight Compute's deterministic rule-engine findings, sorted by\nestimated speedup (highest impact first). These are ground-truth, tool-computed priorities.\n**Fix bottleneck #1 first. Do NOT pursue a lower-ranked lever (e.g. occupancy, pipelining,\nmainloop overlap) until #1 is resolved or proven not applicable.**\n\n1. [est. 70% speedup] Loads\n\n**Identified Bottleneck:** memory\n**Severity:** Unknown\n**Priority Score:** 0.7/10\n**Estimated Improvement Potential:** 2.3x speedup\n\n**Optimization Recommendations:**\n1. Coalesce\n2. Tile\n\n**Detailed Analysis:**\ndetails\n\n**Your Previous Code:**\n```python\ncandidate\n```\n\n**Task:** Generate an optimized implementation that addresses these bottlenecks while maintaining correctness.\nFocus on the highest-priority recommendations to maximize performance improvement.\n"
+    }
+  }
+]

@@ -1,0 +1,470 @@
+{
+  "candidates": [
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "583e5363b6d6095fd9833f35660a1b3d63f4cbb366f279f0afdaca8fb9d046c1"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "a1bab641d26ae7a16df14e0862315110af19e57ed26a450799dee0dffd086918"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "a50cf06e799597134267f54ab5dd2e707e02bafde6f0c409c37611f01cd3f695"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "ae5ba99a7a615dde93e411c5679f13a6f04c1843f5a0791da319d67faf66e27c"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": null,
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": null,
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "bdddd6c9a7014d00d2fb42c757fb2ffa0b627a277f0ccbdfb2ca8c065e4a4db5"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "a0740707da3003f58f8f8a24b882b095ccf1270dfc3118df0c6f7f2ae64b0003"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "6f86023f5e8237c5beb87a0f3fd926e812a9ad9164cdb3f38c051c608fb2b731"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "f1900b79f03d916105ea689eca1003a8d63dc5aa4f995ddb7d2b80680314e438"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "8c4aa88fbaef6fe4f7b09c16631874a4c5390434686fff621ad39a3bc37cfcec"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "fe14a4a494d641257717338a5a11f391e498ab808313c0072422fd8d220bdf0b"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "8c02c88f5750416d9914997a0e3416fa81df4124f202789aef32ff29afa3aa84"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "4f224bd0ef66e551576872a3261ad22589201f43384702ee41c201bd205f1823"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "6f86023f5e8237c5beb87a0f3fd926e812a9ad9164cdb3f38c051c608fb2b731"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "f1900b79f03d916105ea689eca1003a8d63dc5aa4f995ddb7d2b80680314e438"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "8c4aa88fbaef6fe4f7b09c16631874a4c5390434686fff621ad39a3bc37cfcec"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        9,
+        0
+      ],
+      "sha256": "fe14a4a494d641257717338a5a11f391e498ab808313c0072422fd8d220bdf0b"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "583e5363b6d6095fd9833f35660a1b3d63f4cbb366f279f0afdaca8fb9d046c1"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "a1bab641d26ae7a16df14e0862315110af19e57ed26a450799dee0dffd086918"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "a50cf06e799597134267f54ab5dd2e707e02bafde6f0c409c37611f01cd3f695"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "ae5ba99a7a615dde93e411c5679f13a6f04c1843f5a0791da319d67faf66e27c"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        10,
+        0
+      ],
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "583e5363b6d6095fd9833f35660a1b3d63f4cbb366f279f0afdaca8fb9d046c1"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "a1bab641d26ae7a16df14e0862315110af19e57ed26a450799dee0dffd086918"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "pytorch",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "a50cf06e799597134267f54ab5dd2e707e02bafde6f0c409c37611f01cd3f695"
+    },
+    {
+      "baseline": "triton",
+      "mode": "initial",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "ae5ba99a7a615dde93e411c5679f13a6f04c1843f5a0791da319d67faf66e27c"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "b14ff64cb7099462f7de1bdc1e877ba9f613cf6071c04420851557f9f325e050"
+    },
+    {
+      "baseline": "triton",
+      "mode": "repair",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "0521dadc8546f472bdacbe48994a9e865ebfa6a8c41c15adecd31566c4eb8414"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": null,
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "9b66a63c530316fd8d8b2b29cbd5fd08989e95bf51e787428b79e5f478d5e84e"
+    },
+    {
+      "baseline": "triton",
+      "mode": "optimize",
+      "cutlass": "/tmp/cutlass path",
+      "capability": [
+        12,
+        0
+      ],
+      "sha256": "5a6da832160ae15691835439a2cd05abb55862aa252c12d5714c2df842e68657"
+    }
+  ],
+  "references": [
+    {
+      "gpu": "NVIDIA H200 (simulated)",
+      "ridge": 412.0,
+      "result": "You are an expert GPU performance analyst.\n\n## Task\nAnalyze the reference implementation to determine its bottleneck type.\n\n## Invalid Code Handling\n**IMPORTANT**: If the code is invalid, unparseable, or not a valid CUDA/PyTorch kernel:\n- Set `invalid_reference_code = true`\n- Fill other fields with placeholder values (e.g., empty lists, zeros)\n- Explain in `analysis_notes` why the code is invalid\n- Do NOT call the profiling tool for invalid code\n\n## Required Steps (for valid code)\n\n### Step 1: Code Analysis (Theoretical)\n1. Identify math operations (GEMM, Softmax, Convolution, etc.)\n2. Extract problem dimensions from code\n3. Calculate:\n   - Total FLOPs (e.g., GEMM: 2\u00d7M\u00d7N\u00d7K)\n   - Total Bytes (memory traffic)\n   - Compute Intensity (CI) = FLOPs / Bytes\n\n### Step 2: Classification from Roofline\nUse NVIDIA H200 (simulated) specs:\n- Ridge Point = 412 FLOPs/byte\n\nClassification:\n- CI \u2265 1648 (4\u00d7 ridge) \u2192 COMPUTE_BOUND\n- CI \u2264 103 (0.25\u00d7 ridge) \u2192 MEMORY_BOUND  \n- Otherwise \u2192 MIXED\n\n### Step 3: NCU Profiling (REQUIRED for valid code)\n**You MUST call `profile_reference_with_ncu()` to get actual measurements.**\n\nThis gives you:\n- sm_throughput: % of compute peak (high = compute-bound)\n- dram_throughput: % of memory peak (high = memory-bound)\n\nActual classification from NCU:\n- dram_throughput > sm_throughput \u2192 MEMORY_BOUND\n- sm_throughput > dram_throughput \u2192 COMPUTE_BOUND\n- Similar values \u2192 MIXED\n\n### Step 4: Final Classification\n- If theoretical == actual: Use that classification\n- If mismatch: Trust theoretical (represents ceiling, not current implementation quality)\n\n## Output Format\nProvide all analysis in the structured ReferenceAnalysis output.\n- Set `invalid_reference_code=false` for valid CUDA/PyTorch code\n- Set `invalid_reference_code=true` for invalid/unparseable code\n"
+    },
+    {
+      "gpu": "NVIDIA H200",
+      "ridge": 412.2916666666667,
+      "result": "You are an expert GPU performance analyst.\n\n## Task\nAnalyze the reference implementation to determine its bottleneck type.\n\n## Invalid Code Handling\n**IMPORTANT**: If the code is invalid, unparseable, or not a valid CUDA/PyTorch kernel:\n- Set `invalid_reference_code = true`\n- Fill other fields with placeholder values (e.g., empty lists, zeros)\n- Explain in `analysis_notes` why the code is invalid\n- Do NOT call the profiling tool for invalid code\n\n## Required Steps (for valid code)\n\n### Step 1: Code Analysis (Theoretical)\n1. Identify math operations (GEMM, Softmax, Convolution, etc.)\n2. Extract problem dimensions from code\n3. Calculate:\n   - Total FLOPs (e.g., GEMM: 2\u00d7M\u00d7N\u00d7K)\n   - Total Bytes (memory traffic)\n   - Compute Intensity (CI) = FLOPs / Bytes\n\n### Step 2: Classification from Roofline\nUse NVIDIA H200 specs:\n- Ridge Point = 412 FLOPs/byte\n\nClassification:\n- CI \u2265 1649 (4\u00d7 ridge) \u2192 COMPUTE_BOUND\n- CI \u2264 103 (0.25\u00d7 ridge) \u2192 MEMORY_BOUND  \n- Otherwise \u2192 MIXED\n\n### Step 3: NCU Profiling (REQUIRED for valid code)\n**You MUST call `profile_reference_with_ncu()` to get actual measurements.**\n\nThis gives you:\n- sm_throughput: % of compute peak (high = compute-bound)\n- dram_throughput: % of memory peak (high = memory-bound)\n\nActual classification from NCU:\n- dram_throughput > sm_throughput \u2192 MEMORY_BOUND\n- sm_throughput > dram_throughput \u2192 COMPUTE_BOUND\n- Similar values \u2192 MIXED\n\n### Step 4: Final Classification\n- If theoretical == actual: Use that classification\n- If mismatch: Trust theoretical (represents ceiling, not current implementation quality)\n\n## Output Format\nProvide all analysis in the structured ReferenceAnalysis output.\n- Set `invalid_reference_code=false` for valid CUDA/PyTorch code\n- Set `invalid_reference_code=true` for invalid/unparseable code\n"
+    },
+    {
+      "gpu": "NVIDIA B200",
+      "ridge": 562.5,
+      "result": "You are an expert GPU performance analyst.\n\n## Task\nAnalyze the reference implementation to determine its bottleneck type.\n\n## Invalid Code Handling\n**IMPORTANT**: If the code is invalid, unparseable, or not a valid CUDA/PyTorch kernel:\n- Set `invalid_reference_code = true`\n- Fill other fields with placeholder values (e.g., empty lists, zeros)\n- Explain in `analysis_notes` why the code is invalid\n- Do NOT call the profiling tool for invalid code\n\n## Required Steps (for valid code)\n\n### Step 1: Code Analysis (Theoretical)\n1. Identify math operations (GEMM, Softmax, Convolution, etc.)\n2. Extract problem dimensions from code\n3. Calculate:\n   - Total FLOPs (e.g., GEMM: 2\u00d7M\u00d7N\u00d7K)\n   - Total Bytes (memory traffic)\n   - Compute Intensity (CI) = FLOPs / Bytes\n\n### Step 2: Classification from Roofline\nUse NVIDIA B200 specs:\n- Ridge Point = 562 FLOPs/byte\n\nClassification:\n- CI \u2265 2250 (4\u00d7 ridge) \u2192 COMPUTE_BOUND\n- CI \u2264 141 (0.25\u00d7 ridge) \u2192 MEMORY_BOUND  \n- Otherwise \u2192 MIXED\n\n### Step 3: NCU Profiling (REQUIRED for valid code)\n**You MUST call `profile_reference_with_ncu()` to get actual measurements.**\n\nThis gives you:\n- sm_throughput: % of compute peak (high = compute-bound)\n- dram_throughput: % of memory peak (high = memory-bound)\n\nActual classification from NCU:\n- dram_throughput > sm_throughput \u2192 MEMORY_BOUND\n- sm_throughput > dram_throughput \u2192 COMPUTE_BOUND\n- Similar values \u2192 MIXED\n\n### Step 4: Final Classification\n- If theoretical == actual: Use that classification\n- If mismatch: Trust theoretical (represents ceiling, not current implementation quality)\n\n## Output Format\nProvide all analysis in the structured ReferenceAnalysis output.\n- Set `invalid_reference_code=false` for valid CUDA/PyTorch code\n- Set `invalid_reference_code=true` for invalid/unparseable code\n"
+    },
+    {
+      "gpu": "NVIDIA H100 80GB HBM3",
+      "ridge": 590.7462686567164,
+      "result": "You are an expert GPU performance analyst.\n\n## Task\nAnalyze the reference implementation to determine its bottleneck type.\n\n## Invalid Code Handling\n**IMPORTANT**: If the code is invalid, unparseable, or not a valid CUDA/PyTorch kernel:\n- Set `invalid_reference_code = true`\n- Fill other fields with placeholder values (e.g., empty lists, zeros)\n- Explain in `analysis_notes` why the code is invalid\n- Do NOT call the profiling tool for invalid code\n\n## Required Steps (for valid code)\n\n### Step 1: Code Analysis (Theoretical)\n1. Identify math operations (GEMM, Softmax, Convolution, etc.)\n2. Extract problem dimensions from code\n3. Calculate:\n   - Total FLOPs (e.g., GEMM: 2\u00d7M\u00d7N\u00d7K)\n   - Total Bytes (memory traffic)\n   - Compute Intensity (CI) = FLOPs / Bytes\n\n### Step 2: Classification from Roofline\nUse NVIDIA H100 80GB HBM3 specs:\n- Ridge Point = 591 FLOPs/byte\n\nClassification:\n- CI \u2265 2363 (4\u00d7 ridge) \u2192 COMPUTE_BOUND\n- CI \u2264 148 (0.25\u00d7 ridge) \u2192 MEMORY_BOUND  \n- Otherwise \u2192 MIXED\n\n### Step 3: NCU Profiling (REQUIRED for valid code)\n**You MUST call `profile_reference_with_ncu()` to get actual measurements.**\n\nThis gives you:\n- sm_throughput: % of compute peak (high = compute-bound)\n- dram_throughput: % of memory peak (high = memory-bound)\n\nActual classification from NCU:\n- dram_throughput > sm_throughput \u2192 MEMORY_BOUND\n- sm_throughput > dram_throughput \u2192 COMPUTE_BOUND\n- Similar values \u2192 MIXED\n\n### Step 4: Final Classification\n- If theoretical == actual: Use that classification\n- If mismatch: Trust theoretical (represents ceiling, not current implementation quality)\n\n## Output Format\nProvide all analysis in the structured ReferenceAnalysis output.\n- Set `invalid_reference_code=false` for valid CUDA/PyTorch code\n- Set `invalid_reference_code=true` for invalid/unparseable code\n"
+    }
+  ]
+}

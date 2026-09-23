@@ -1,0 +1,807 @@
+{
+  "csv": [
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10.0,12.0\nkernel,20.0,32.0\nother,30.0,8.0\n",
+      "names": [],
+      "result": {
+        "other": {
+          "gpu__time_duration.sum": 30.0,
+          "value": 8.0
+        },
+        "kernel": {
+          "gpu__time_duration.sum": 20.0,
+          "value": 32.0
+        }
+      },
+      "order": [
+        "other",
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10.0,12.0\nkernel,20.0,32.0\nother,30.0,8.0\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 20.0,
+          "value": 32.0
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10.0,12.0\nkernel,20.0,32.0\nother,30.0,8.0\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {
+        "other": {
+          "gpu__time_duration.sum": 30.0,
+          "value": 8.0
+        },
+        "kernel": {
+          "gpu__time_duration.sum": 20.0,
+          "value": 32.0
+        }
+      },
+      "order": [
+        "other",
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10,12\nkernel,20,32\nother,30,8\n",
+      "names": [],
+      "result": {
+        "other": {
+          "gpu__time_duration.sum": 30,
+          "value": 8
+        },
+        "kernel": {
+          "gpu__time_duration.sum": 20,
+          "value": 32
+        }
+      },
+      "order": [
+        "other",
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10,12\nkernel,20,32\nother,30,8\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 20,
+          "value": 32
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\nkernel,10,12\nkernel,20,32\nother,30,8\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {
+        "other": {
+          "gpu__time_duration.sum": 30,
+          "value": 8
+        },
+        "kernel": {
+          "gpu__time_duration.sum": 20,
+          "value": 32
+        }
+      },
+      "order": [
+        "other",
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,counter\n,ns,count\na,10,18446744073709551615\nb,20.5,42\n",
+      "names": [],
+      "result": {
+        "b": {
+          "gpu__time_duration.sum": 20.5,
+          "counter": 42
+        },
+        "a": {
+          "gpu__time_duration.sum": 10,
+          "counter": 18446744073709551615
+        }
+      },
+      "order": [
+        "b",
+        "a"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\n\"kernel<int, 4>\",\"1,200\",34%\nother,10,raw\n",
+      "names": [],
+      "result": {
+        "kernel<int, 4>": {
+          "gpu__time_duration.sum": 1200,
+          "value": 34
+        },
+        "other": {
+          "gpu__time_duration.sum": 10,
+          "value": "raw"
+        }
+      },
+      "order": [
+        "kernel<int, 4>",
+        "other"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\n\"kernel<int, 4>\",\"1,200\",34%\nother,10,raw\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 1200,
+          "value": 34
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum,value\n,ns,%\n\"kernel<int, 4>\",\"1,200\",34%\nother,10,raw\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {
+        "other": {
+          "gpu__time_duration.sum": 10,
+          "value": "raw"
+        },
+        "kernel": {
+          "gpu__time_duration.sum": 1200,
+          "value": 34
+        }
+      },
+      "order": [
+        "other",
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\nkernel0,0.0\nkernel1,10.0\nkernel2,20.0\nkernel3,30.0\nkernel4,40.0\nkernel5,50.0\nkernel6,60.0\nkernel7,70.0\n",
+      "names": [],
+      "result": {
+        "kernel7": {
+          "gpu__time_duration.sum": 70.0
+        },
+        "kernel6": {
+          "gpu__time_duration.sum": 60.0
+        },
+        "kernel5": {
+          "gpu__time_duration.sum": 50.0
+        },
+        "kernel4": {
+          "gpu__time_duration.sum": 40.0
+        },
+        "kernel3": {
+          "gpu__time_duration.sum": 30.0
+        }
+      },
+      "order": [
+        "kernel7",
+        "kernel6",
+        "kernel5",
+        "kernel4",
+        "kernel3"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\nkernel0,0.0\nkernel1,10.0\nkernel2,20.0\nkernel3,30.0\nkernel4,40.0\nkernel5,50.0\nkernel6,60.0\nkernel7,70.0\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 70.0
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\nkernel0,0.0\nkernel1,10.0\nkernel2,20.0\nkernel3,30.0\nkernel4,40.0\nkernel5,50.0\nkernel6,60.0\nkernel7,70.0\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 70.0
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "==PROF== Connected\nKernel Name,gpu__time_duration.sum\n,ns\nkernel,20\n",
+      "names": [],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "==PROF== Connected\nKernel Name,gpu__time_duration.sum\n,ns\nkernel,20\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "==PROF== Connected\nKernel Name,gpu__time_duration.sum\n,ns\nkernel,20\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n==PROF== Connected\nkernel,20\n",
+      "names": [],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 20
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n==PROF== Connected\nkernel,20\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 20
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n==PROF== Connected\nkernel,20\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {
+        "kernel": {
+          "gpu__time_duration.sum": 20
+        }
+      },
+      "order": [
+        "kernel"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\na,10\nb,10\nc,20\n",
+      "names": [],
+      "result": {
+        "c": {
+          "gpu__time_duration.sum": 20
+        },
+        "a": {
+          "gpu__time_duration.sum": 10
+        },
+        "b": {
+          "gpu__time_duration.sum": 10
+        }
+      },
+      "order": [
+        "c",
+        "a",
+        "b"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\na,10\nb,10\nc,20\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\na,10\nb,10\nc,20\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n,10\nnan,20\nreal,30\n",
+      "names": [],
+      "result": {
+        "real": {
+          "gpu__time_duration.sum": 30
+        }
+      },
+      "order": [
+        "real"
+      ]
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n,10\nnan,20\nreal,30\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "Kernel Name,gpu__time_duration.sum\n,ns\n,10\nnan,20\nreal,30\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,\n",
+      "names": [],
+      "invalid": true
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,\n",
+      "names": [
+        "kernel"
+      ],
+      "invalid": true
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "invalid": true
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,inf\n",
+      "names": [],
+      "invalid": true
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,inf\n",
+      "names": [
+        "kernel"
+      ],
+      "invalid": true
+    },
+    {
+      "csv": "Kernel Name,value\n,%\nkernel,inf\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "invalid": true
+    },
+    {
+      "csv": "wrong header\nunits\nvalue\n",
+      "names": [],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "wrong header\nunits\nvalue\n",
+      "names": [
+        "kernel"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "wrong header\nunits\nvalue\n",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "",
+      "names": [],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "",
+      "names": [
+        "kernel"
+      ],
+      "result": {},
+      "order": []
+    },
+    {
+      "csv": "",
+      "names": [
+        "other",
+        "kernel",
+        "absent"
+      ],
+      "result": {},
+      "order": []
+    }
+  ],
+  "sass": [
+    {
+      "source": "",
+      "kernel": null,
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 0,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 0,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "",
+      "kernel": "first",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 0,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 0,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "",
+      "kernel": "absent",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 0,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 0,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+      "kernel": null,
+      "result": {
+        "wgmma_count": 1,
+        "hmma_count": 1,
+        "imma_count": 1,
+        "dmma_count": 1,
+        "bmma_count": 1,
+        "ldg_count": 1,
+        "stg_count": 1,
+        "lds_count": 1,
+        "sts_count": 1,
+        "cp_async_count": 2,
+        "tma_count": 3,
+        "ffma_count": 1,
+        "hfma_count": 2,
+        "stl_count": 1,
+        "ldl_count": 1,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+      "kernel": "first",
+      "result": {
+        "wgmma_count": 1,
+        "hmma_count": 1,
+        "imma_count": 1,
+        "dmma_count": 1,
+        "bmma_count": 1,
+        "ldg_count": 1,
+        "stg_count": 1,
+        "lds_count": 1,
+        "sts_count": 1,
+        "cp_async_count": 2,
+        "tma_count": 3,
+        "ffma_count": 1,
+        "hfma_count": 2,
+        "stl_count": 1,
+        "ldl_count": 1,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+      "kernel": "absent",
+      "result": {
+        "wgmma_count": 1,
+        "hmma_count": 1,
+        "imma_count": 1,
+        "dmma_count": 1,
+        "bmma_count": 1,
+        "ldg_count": 1,
+        "stg_count": 1,
+        "lds_count": 1,
+        "sts_count": 1,
+        "cp_async_count": 2,
+        "tma_count": 3,
+        "ffma_count": 1,
+        "hfma_count": 2,
+        "stl_count": 1,
+        "ldl_count": 1,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "WGMMA HMMA IMMA DMMA BMMA LDG STG LDS STS LDGSTS CP.ASYNC TMA UTMALOAD UTMASTORE FFMA HFMA HFMA2 STL LDL",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+      "kernel": null,
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 1,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+      "kernel": "first",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 1,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+      "kernel": "absent",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 1,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": "HGMMA MMA _WGMMA LDGEXT hmma ffma",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": ".text.first\nHMMA\n.text.second\nFFMA\n",
+      "kernel": null,
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 1,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": ".text.first\nHMMA\n.text.second\nFFMA\n",
+        "kernel_name": ""
+      }
+    },
+    {
+      "source": ".text.first\nHMMA\n.text.second\nFFMA\n",
+      "kernel": "first",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 0,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": ".text.first\nHMMA\n.text.second\nFFMA\n",
+        "kernel_name": "first"
+      }
+    },
+    {
+      "source": ".text.first\nHMMA\n.text.second\nFFMA\n",
+      "kernel": "absent",
+      "result": {
+        "wgmma_count": 0,
+        "hmma_count": 1,
+        "imma_count": 0,
+        "dmma_count": 0,
+        "bmma_count": 0,
+        "ldg_count": 0,
+        "stg_count": 0,
+        "lds_count": 0,
+        "sts_count": 0,
+        "cp_async_count": 0,
+        "tma_count": 0,
+        "ffma_count": 1,
+        "hfma_count": 0,
+        "stl_count": 0,
+        "ldl_count": 0,
+        "uses_cublas": false,
+        "cublas_symbols": [],
+        "sass_text": ".text.first\nHMMA\n.text.second\nFFMA\n",
+        "kernel_name": ""
+      }
+    }
+  ],
+  "rules": [
+    {
+      "source": "",
+      "result": []
+    },
+    {
+      "source": "OPT Est. Speedup: 20%\n lower\n\nOPT Est. Local Speedup: 70.5%\n higher\n wrapped\n----\n",
+      "result": [
+        {
+          "est_speedup_pct": 70.5,
+          "text": "higher wrapped"
+        },
+        {
+          "est_speedup_pct": 20.0,
+          "text": "lower"
+        }
+      ]
+    },
+    {
+      "source": "OPT Est. Speedup: 20%\n first\nOPT Est. Speedup: 20%\n second\nSection: next\n",
+      "result": [
+        {
+          "est_speedup_pct": 20.0,
+          "text": "first"
+        },
+        {
+          "est_speedup_pct": 20.0,
+          "text": "second"
+        }
+      ]
+    },
+    {
+      "source": "OPT Est. Speedup: 20%\n\n",
+      "result": []
+    }
+  ]
+}

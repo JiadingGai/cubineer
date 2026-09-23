@@ -52,6 +52,7 @@ const AGENT_NAMES: &str = include_str!("../../../assets/agent/agent_names.txt");
 /// unrepresentable.
 #[allow(clippy::large_enum_variant)]
 pub(super) enum SpawnInitialInput {
+    Controller(Option<Box<StartThreadOptions>>),
     UserInput(Vec<UserInput>),
     InterAgentCommunication(InterAgentCommunication, AgentCommunicationContext),
 }
@@ -289,6 +290,31 @@ impl LocalAgentControl {
         ))
         .await?;
         Ok(spawned_agent.thread_id)
+    }
+
+    pub(crate) async fn spawn_controller_agent(
+        &self,
+        startup: StartThreadOptions,
+        parent_thread_id: ThreadId,
+    ) -> CodexResult<crate::thread_manager::NewThread> {
+        let config = startup.config.clone();
+        Box::pin(self.spawn_agent_internal_with_thread(
+            config,
+            SpawnInitialInput::Controller(Some(Box::new(startup))),
+            Some(SessionSource::SubAgent(SubAgentSource::ThreadSpawn {
+                parent_thread_id,
+                depth: 1,
+                agent_path: None,
+                agent_nickname: None,
+                agent_role: None,
+            })),
+            SpawnAgentOptions {
+                parent_thread_id: Some(parent_thread_id),
+                ..Default::default()
+            },
+        ))
+        .await
+        .map(|(_, _, thread)| thread)
     }
 
     fn validate_loaded_v2_child(
@@ -680,6 +706,27 @@ impl LocalAgentControl {
         session_source: Option<SessionSource>,
         options: SpawnAgentOptions,
     ) -> CodexResult<(LiveAgent, ThreadConfigSnapshot)> {
+        let (agent, config, _) = Box::pin(self.spawn_agent_internal_with_thread(
+            config,
+            initial_input,
+            session_source,
+            options,
+        ))
+        .await?;
+        Ok((agent, config))
+    }
+
+    async fn spawn_agent_internal_with_thread(
+        &self,
+        config: Config,
+        mut initial_input: SpawnInitialInput,
+        session_source: Option<SessionSource>,
+        options: SpawnAgentOptions,
+    ) -> CodexResult<(
+        LiveAgent,
+        ThreadConfigSnapshot,
+        crate::thread_manager::NewThread,
+    )> {
         let membership = self.runtime.admit_start()?;
         let spawn_started_at = Instant::now();
         let state = self.runtime.upgrade()?;
@@ -832,6 +879,15 @@ impl LocalAgentControl {
             }
             (None, _) => None,
         };
+        if let SpawnInitialInput::Controller(startup) = &mut initial_input
+            && let Some(startup) = startup.take()
+        {
+            start_options = StartThreadOptions {
+                session_source: start_options.session_source,
+                thread_source: Some(ThreadSource::Subagent),
+                ..*startup
+            };
+        }
         let child_create_started_at = Instant::now();
         let new_thread = state
             .spawn_child_thread(
@@ -936,6 +992,7 @@ impl LocalAgentControl {
         };
         let input_admission_started_at = Instant::now();
         match initial_input {
+            SpawnInitialInput::Controller(_) => {}
             SpawnInitialInput::UserInput(input) => {
                 self.send_input(new_thread.thread_id, input, start_options)
                     .await
@@ -1005,7 +1062,7 @@ impl LocalAgentControl {
                 total: spawn_started_at.elapsed(),
             },
         );
-        Ok((agent, config))
+        Ok((agent, config, new_thread))
     }
 
     /// Prepare copied history while leaving startup settings and timing with the caller.

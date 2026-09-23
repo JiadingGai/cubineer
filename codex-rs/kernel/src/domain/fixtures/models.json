@@ -1,0 +1,521 @@
+{
+  "candidate": {
+    "validation": {
+      "description": "Single code completion with metadata",
+      "example": {
+        "approach": "Simple addition using + operator",
+        "code": "def add(a, b):\n    return a + b",
+        "confidence": 0.95
+      },
+      "properties": {
+        "code": {
+          "description": "The generated Python code",
+          "title": "Code",
+          "type": "string"
+        },
+        "approach": {
+          "description": "Brief description of the approach used",
+          "title": "Approach",
+          "type": "string"
+        },
+        "confidence": {
+          "description": "Confidence score (0-1)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "approach",
+        "confidence"
+      ],
+      "title": "CodeCompletion",
+      "type": "object"
+    },
+    "output": {
+      "description": "Single code completion with metadata",
+      "properties": {
+        "code": {
+          "description": "The generated Python code",
+          "title": "Code",
+          "type": "string"
+        },
+        "approach": {
+          "description": "Brief description of the approach used",
+          "title": "Approach",
+          "type": "string"
+        },
+        "confidence": {
+          "description": "Confidence score (0-1)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "approach",
+        "confidence"
+      ],
+      "title": "CodeCompletion",
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "reference": {
+    "validation": {
+      "$defs": {
+        "BottleneckType": {
+          "description": "Bottleneck classification types for GPU kernels.\n\nMath-level (Stage 1 - roofline-based):\n    Derived from compute intensity analysis. These represent the\n    theoretical performance ceiling based on the math operations.\n\nImplementation-level (Stage 2 - profiler-detected):\n    Detected during optimization via NCU/nsys. These represent\n    issues with the current implementation, not the algorithm.",
+          "enum": [
+            "compute_bound",
+            "memory_bound",
+            "mixed",
+            "latency_bound",
+            "occupancy_limited",
+            "launch_overhead"
+          ],
+          "title": "BottleneckType",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Output schema for Stage 1 Benchmarking Agent.\n\nThis structured output captures the complete analysis of a reference\nkernel implementation, including both theoretical (math-based) and\nempirical (NCU-based) bottleneck classification.\n\nThe final_bottleneck field is used by Stage 2 to filter which\nProfilingTools are relevant for the optimization.",
+      "properties": {
+        "invalid_reference_code": {
+          "default": false,
+          "description": "Set to True if the reference code is invalid, unparseable, or cannot be analyzed. When True, other fields may contain placeholder values and should not be trusted.",
+          "title": "Invalid Reference Code",
+          "type": "boolean"
+        },
+        "math_operations": {
+          "description": "List of mathematical operations identified in the code. Examples: ['GEMM', 'Softmax', 'LayerNorm', 'Conv2d']",
+          "items": {
+            "type": "string"
+          },
+          "title": "Math Operations",
+          "type": "array"
+        },
+        "dominant_operation": {
+          "description": "The primary operation that dominates runtime. Examples: 'GEMM', 'Softmax', 'Attention'",
+          "title": "Dominant Operation",
+          "type": "string"
+        },
+        "problem_dimensions_str": {
+          "description": "Key dimensions extracted from the code as a string. Examples: 'M=4096, N=4096, K=4096' for GEMM, 'batch=32, seq_len=512, hidden=768' for transformer",
+          "title": "Problem Dimensions Str",
+          "type": "string"
+        },
+        "total_flops": {
+          "description": "Total floating point operations. GEMM: 2*M*N*K, Softmax: ~5*N per row, etc.",
+          "title": "Total Flops",
+          "type": "integer"
+        },
+        "total_bytes": {
+          "description": "Total memory traffic in bytes. Include input reads + output writes + any intermediate buffers.",
+          "title": "Total Bytes",
+          "type": "integer"
+        },
+        "compute_intensity": {
+          "description": "Arithmetic intensity = total_flops / total_bytes. Higher values indicate more compute-bound kernels.",
+          "title": "Compute Intensity",
+          "type": "number"
+        },
+        "theoretical_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "Bottleneck type from theoretical roofline analysis. Based on compute_intensity vs ridge point."
+        },
+        "actual_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "Bottleneck type from NCU profiling. Based on sm_throughput vs dram_throughput comparison."
+        },
+        "classification_match": {
+          "description": "Whether theoretical and actual classifications agree. Mismatch may indicate implementation inefficiency.",
+          "title": "Classification Match",
+          "type": "boolean"
+        },
+        "final_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "The bottleneck classification used for Stage 2 tool filtering. When classifications match, use that. When they differ, trust theoretical (represents ceiling)."
+        },
+        "sm_throughput": {
+          "description": "SM (compute) throughput as percentage of peak. High values (>60%) indicate compute-bound.",
+          "title": "Sm Throughput",
+          "type": "number"
+        },
+        "dram_throughput": {
+          "description": "DRAM (memory) throughput as percentage of peak. High values (>60%) indicate memory-bound.",
+          "title": "Dram Throughput",
+          "type": "number"
+        },
+        "reference_latency_ms": {
+          "description": "Reference kernel execution time in milliseconds. Used as baseline for speedup calculations.",
+          "title": "Reference Latency Ms",
+          "type": "number"
+        },
+        "occupancy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Achieved occupancy as percentage. Low values may indicate register pressure.",
+          "title": "Occupancy"
+        },
+        "kernel_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the profiled CUDA kernel.",
+          "title": "Kernel Name"
+        },
+        "achievable_speedup": {
+          "description": "Estimated achievable speedup based on roofline gap. 1.0 means already at theoretical peak.",
+          "title": "Achievable Speedup",
+          "type": "number"
+        },
+        "recommended_techniques": {
+          "description": "Optimization techniques recommended based on bottleneck type. Examples: ['tensor_cores', 'memory_coalescing', 'kernel_fusion']",
+          "items": {
+            "type": "string"
+          },
+          "title": "Recommended Techniques",
+          "type": "array"
+        },
+        "analysis_notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional notes about the analysis, especially if theoretical and actual classifications differ.",
+          "title": "Analysis Notes"
+        }
+      },
+      "required": [
+        "math_operations",
+        "dominant_operation",
+        "problem_dimensions_str",
+        "total_flops",
+        "total_bytes",
+        "compute_intensity",
+        "theoretical_bottleneck",
+        "actual_bottleneck",
+        "classification_match",
+        "final_bottleneck",
+        "sm_throughput",
+        "dram_throughput",
+        "reference_latency_ms",
+        "achievable_speedup",
+        "recommended_techniques"
+      ],
+      "title": "ReferenceAnalysis",
+      "type": "object"
+    },
+    "output": {
+      "$defs": {
+        "BottleneckType": {
+          "description": "Bottleneck classification types for GPU kernels.\n\nMath-level (Stage 1 - roofline-based):\n    Derived from compute intensity analysis. These represent the\n    theoretical performance ceiling based on the math operations.\n\nImplementation-level (Stage 2 - profiler-detected):\n    Detected during optimization via NCU/nsys. These represent\n    issues with the current implementation, not the algorithm.",
+          "enum": [
+            "compute_bound",
+            "memory_bound",
+            "mixed",
+            "latency_bound",
+            "occupancy_limited",
+            "launch_overhead"
+          ],
+          "title": "BottleneckType",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Output schema for Stage 1 Benchmarking Agent.\n\nThis structured output captures the complete analysis of a reference\nkernel implementation, including both theoretical (math-based) and\nempirical (NCU-based) bottleneck classification.\n\nThe final_bottleneck field is used by Stage 2 to filter which\nProfilingTools are relevant for the optimization.",
+      "properties": {
+        "invalid_reference_code": {
+          "description": "Set to True if the reference code is invalid, unparseable, or cannot be analyzed. When True, other fields may contain placeholder values and should not be trusted.",
+          "title": "Invalid Reference Code",
+          "type": "boolean"
+        },
+        "math_operations": {
+          "description": "List of mathematical operations identified in the code. Examples: ['GEMM', 'Softmax', 'LayerNorm', 'Conv2d']",
+          "items": {
+            "type": "string"
+          },
+          "title": "Math Operations",
+          "type": "array"
+        },
+        "dominant_operation": {
+          "description": "The primary operation that dominates runtime. Examples: 'GEMM', 'Softmax', 'Attention'",
+          "title": "Dominant Operation",
+          "type": "string"
+        },
+        "problem_dimensions_str": {
+          "description": "Key dimensions extracted from the code as a string. Examples: 'M=4096, N=4096, K=4096' for GEMM, 'batch=32, seq_len=512, hidden=768' for transformer",
+          "title": "Problem Dimensions Str",
+          "type": "string"
+        },
+        "total_flops": {
+          "description": "Total floating point operations. GEMM: 2*M*N*K, Softmax: ~5*N per row, etc.",
+          "title": "Total Flops",
+          "type": "integer"
+        },
+        "total_bytes": {
+          "description": "Total memory traffic in bytes. Include input reads + output writes + any intermediate buffers.",
+          "title": "Total Bytes",
+          "type": "integer"
+        },
+        "compute_intensity": {
+          "description": "Arithmetic intensity = total_flops / total_bytes. Higher values indicate more compute-bound kernels.",
+          "title": "Compute Intensity",
+          "type": "number"
+        },
+        "theoretical_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "Bottleneck type from theoretical roofline analysis. Based on compute_intensity vs ridge point."
+        },
+        "actual_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "Bottleneck type from NCU profiling. Based on sm_throughput vs dram_throughput comparison."
+        },
+        "classification_match": {
+          "description": "Whether theoretical and actual classifications agree. Mismatch may indicate implementation inefficiency.",
+          "title": "Classification Match",
+          "type": "boolean"
+        },
+        "final_bottleneck": {
+          "$ref": "#/$defs/BottleneckType",
+          "description": "The bottleneck classification used for Stage 2 tool filtering. When classifications match, use that. When they differ, trust theoretical (represents ceiling)."
+        },
+        "sm_throughput": {
+          "description": "SM (compute) throughput as percentage of peak. High values (>60%) indicate compute-bound.",
+          "title": "Sm Throughput",
+          "type": "number"
+        },
+        "dram_throughput": {
+          "description": "DRAM (memory) throughput as percentage of peak. High values (>60%) indicate memory-bound.",
+          "title": "Dram Throughput",
+          "type": "number"
+        },
+        "reference_latency_ms": {
+          "description": "Reference kernel execution time in milliseconds. Used as baseline for speedup calculations.",
+          "title": "Reference Latency Ms",
+          "type": "number"
+        },
+        "occupancy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Achieved occupancy as percentage. Low values may indicate register pressure.",
+          "title": "Occupancy"
+        },
+        "kernel_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Name of the profiled CUDA kernel.",
+          "title": "Kernel Name"
+        },
+        "achievable_speedup": {
+          "description": "Estimated achievable speedup based on roofline gap. 1.0 means already at theoretical peak.",
+          "title": "Achievable Speedup",
+          "type": "number"
+        },
+        "recommended_techniques": {
+          "description": "Optimization techniques recommended based on bottleneck type. Examples: ['tensor_cores', 'memory_coalescing', 'kernel_fusion']",
+          "items": {
+            "type": "string"
+          },
+          "title": "Recommended Techniques",
+          "type": "array"
+        },
+        "analysis_notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Additional notes about the analysis, especially if theoretical and actual classifications differ.",
+          "title": "Analysis Notes"
+        }
+      },
+      "required": [
+        "invalid_reference_code",
+        "math_operations",
+        "dominant_operation",
+        "problem_dimensions_str",
+        "total_flops",
+        "total_bytes",
+        "compute_intensity",
+        "theoretical_bottleneck",
+        "actual_bottleneck",
+        "classification_match",
+        "final_bottleneck",
+        "sm_throughput",
+        "dram_throughput",
+        "reference_latency_ms",
+        "occupancy",
+        "kernel_name",
+        "achievable_speedup",
+        "recommended_techniques",
+        "analysis_notes"
+      ],
+      "title": "ReferenceAnalysis",
+      "type": "object"
+    }
+  },
+  "profile": {
+    "validation": {
+      "description": "Structured output for GPU profiling analysis",
+      "properties": {
+        "bottleneck_type": {
+          "description": "Primary bottleneck: 'memory', 'compute', 'latency', or 'balanced'",
+          "title": "Bottleneck Type",
+          "type": "string"
+        },
+        "severity": {
+          "description": "Bottleneck severity: 'critical', 'moderate', or 'minor'",
+          "title": "Severity",
+          "type": "string"
+        },
+        "key_observations": {
+          "description": "List of 3-5 key observations from the metrics",
+          "items": {
+            "type": "string"
+          },
+          "title": "Key Observations",
+          "type": "array"
+        },
+        "optimization_recommendations": {
+          "description": "List of 3-5 specific, actionable optimization recommendations",
+          "items": {
+            "type": "string"
+          },
+          "title": "Optimization Recommendations",
+          "type": "array"
+        },
+        "estimated_improvement": {
+          "description": "Estimated potential speedup if recommendations are applied (1.0 = no improvement, 2.0 = 2x faster)",
+          "maximum": 10.0,
+          "minimum": 1.0,
+          "title": "Estimated Improvement",
+          "type": "number"
+        },
+        "priority_score": {
+          "description": "Priority for optimization (0.0-1.0, higher = more critical)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Priority Score",
+          "type": "number"
+        },
+        "summary": {
+          "description": "One-sentence summary of the performance profile",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bottleneck_type",
+        "severity",
+        "key_observations",
+        "optimization_recommendations",
+        "estimated_improvement",
+        "priority_score",
+        "summary"
+      ],
+      "title": "ProfileAnalysis",
+      "type": "object"
+    },
+    "output": {
+      "description": "Structured output for GPU profiling analysis",
+      "properties": {
+        "bottleneck_type": {
+          "description": "Primary bottleneck: 'memory', 'compute', 'latency', or 'balanced'",
+          "title": "Bottleneck Type",
+          "type": "string"
+        },
+        "severity": {
+          "description": "Bottleneck severity: 'critical', 'moderate', or 'minor'",
+          "title": "Severity",
+          "type": "string"
+        },
+        "key_observations": {
+          "description": "List of 3-5 key observations from the metrics",
+          "items": {
+            "type": "string"
+          },
+          "title": "Key Observations",
+          "type": "array"
+        },
+        "optimization_recommendations": {
+          "description": "List of 3-5 specific, actionable optimization recommendations",
+          "items": {
+            "type": "string"
+          },
+          "title": "Optimization Recommendations",
+          "type": "array"
+        },
+        "estimated_improvement": {
+          "description": "Estimated potential speedup if recommendations are applied (1.0 = no improvement, 2.0 = 2x faster)",
+          "maximum": 10.0,
+          "minimum": 1.0,
+          "title": "Estimated Improvement",
+          "type": "number"
+        },
+        "priority_score": {
+          "description": "Priority for optimization (0.0-1.0, higher = more critical)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Priority Score",
+          "type": "number"
+        },
+        "summary": {
+          "description": "One-sentence summary of the performance profile",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bottleneck_type",
+        "severity",
+        "key_observations",
+        "optimization_recommendations",
+        "estimated_improvement",
+        "priority_score",
+        "summary"
+      ],
+      "title": "ProfileAnalysis",
+      "type": "object",
+      "additionalProperties": false
+    }
+  }
+}

@@ -129,6 +129,8 @@ use tracing::warn;
 
 const THREAD_CREATED_CHANNEL_CAPACITY: usize = 1024;
 
+mod controller_child;
+
 /// Test-only override for enabling thread-manager behaviors used by integration
 /// tests.
 ///

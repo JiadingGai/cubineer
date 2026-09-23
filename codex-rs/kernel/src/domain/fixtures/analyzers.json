@@ -1,0 +1,436 @@
+{
+  "registry": [
+    {
+      "name": "tensor_core_underutilization",
+      "description": "Detects when matrix operations are not using Tensor Cores",
+      "priority": 100,
+      "required": [
+        "sm__inst_executed_pipe_tensor.avg.pct_of_peak_sustained_active"
+      ]
+    },
+    {
+      "name": "memory_coalescing",
+      "description": "Detects uncoalesced memory access patterns",
+      "priority": 90,
+      "required": [
+        "l1tex__t_sector_hit_rate.pct",
+        "smsp__warp_issue_stalled_memory_dependency_per_warp_active.pct"
+      ]
+    },
+    {
+      "name": "high_dram_throughput",
+      "description": "Detects memory-bound kernels with high DRAM utilization",
+      "priority": 75,
+      "required": [
+        "dram__throughput.avg.pct_of_peak_sustained_elapsed"
+      ]
+    },
+    {
+      "name": "occupancy_limiter",
+      "description": "Detects low occupancy and identifies the limiting factor",
+      "priority": 85,
+      "required": [
+        "sm__warps_active.avg.pct_of_peak_sustained_active",
+        "launch__registers_per_thread"
+      ]
+    },
+    {
+      "name": "high_register_usage",
+      "description": "Detects excessive register usage that may cause spilling",
+      "priority": 70,
+      "required": [
+        "launch__registers_per_thread"
+      ]
+    },
+    {
+      "name": "warp_stall_analyzer",
+      "description": "Analyzes warp stall reasons to identify bottlenecks",
+      "priority": 80,
+      "required": [
+        "smsp__warp_issue_stalled_memory_dependency_per_warp_active.pct",
+        "smsp__warp_issue_stalled_short_scoreboard_per_warp_active.pct",
+        "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
+        "smsp__warp_issue_stalled_barrier_per_warp_active.pct",
+        "smsp__warp_issue_stalled_branch_resolving_per_warp_active.pct"
+      ]
+    },
+    {
+      "name": "barrier_stall_detector",
+      "description": "Detects high barrier synchronization stalls",
+      "priority": 75,
+      "required": [
+        "smsp__warp_issue_stalled_barrier_per_warp_active.pct"
+      ]
+    },
+    {
+      "name": "wgmma_instruction_detector",
+      "description": "Detects presence/absence of WGMMA tensor core instructions in SASS",
+      "priority": 95,
+      "required": []
+    },
+    {
+      "name": "register_spill_detector",
+      "description": "Detects register spills via SASS STL/LDL instructions",
+      "priority": 95,
+      "required": []
+    }
+  ],
+  "outputs": {
+    "tensor_core_underutilization": {
+      "severity": "critical",
+      "title": "Tensor Core Under-Utilization",
+      "metrics_thresholds": {
+        "tensor_core_utilization": ">10.0%"
+      },
+      "root_cause": "\nTensor Cores are specialized hardware units for matrix operations (GEMM, convolutions).\nLow utilization indicates the kernel is using CUDA cores instead, which is 5-10x slower\nfor matrix operations.\n\n**First, assess whether this kernel performs matrix multiplication operations:**\n- Tensor Cores are designed for matrix operations (GEMM, convolutions)\n- NOT applicable for element-wise ops, reductions, or non-matrix workloads\n- If this is NOT a matrix operation, low tensor core usage is expected and normal\n",
+      "recommendations": [
+        "**If this IS a matrix operation kernel:**",
+        "  - **CRITICAL: You MUST use Tensor Cores, NOT CUDA cores for matrix operations!**",
+        "  - **Option 1: cuBLAS library** (cublasGemmEx, cublasSgemm) - easiest, >80% TC utilization",
+        "  - **Option 2: CUTLASS templates** - flexible, production-ready, >80% TC utilization",
+        "  - Custom CUDA kernels using only CUDA cores for matmul are OBSOLETE",
+        "**If this is NOT a matrix operation:**",
+        "  - Low tensor core usage is expected - focus on other optimizations"
+      ],
+      "expected_improvement": "5-10x speedup for matrix operations",
+      "code_example": "// Using cuBLAS (recommended for standard GEMM)\n#include <cublas_v2.h>\n\ncublasHandle_t handle;\ncublasCreate(&handle);\n\n// C = alpha * A * B + beta * C\ncublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,\n            M, N, K,\n            &alpha,\n            d_A, lda,\n            d_B, ldb,\n            &beta,\n            d_C, ldc);\n\n// Or using CUTLASS for custom matrix ops\n#include <cutlass/gemm/device/gemm.h>\n\nusing Gemm = cutlass::gemm::device::Gemm<\n    float, cutlass::layout::RowMajor,  // A\n    float, cutlass::layout::RowMajor,  // B\n    float, cutlass::layout::RowMajor>; // C\n",
+      "references": [
+        "cuBLAS Documentation: https://docs.nvidia.com/cuda/cublas/",
+        "CUTLASS GitHub: https://github.com/NVIDIA/cutlass"
+      ]
+    },
+    "memory_coalescing": {
+      "severity": "high",
+      "title": "Memory Coalescing Issue",
+      "metrics_thresholds": {
+        "L1 cache hit rate": ">70.0%",
+        "Memory dependency stalls": "<40.0%"
+      },
+      "root_cause": "\n**Uncoalesced Memory Access Pattern Detected**\n\nThreads in a warp are accessing non-consecutive memory addresses, causing:\n- Multiple memory transactions where one would suffice\n- Cache line waste (loading 128 bytes but using only a few)\n- High latency from serialized memory operations\n\nCommon causes:\n1. **Tensor layout mismatch**: Layout is [B, H, S] but stride-1 access is on H dimension\n2. **Strided access patterns**: `A[tid * stride]` where stride > 1\n3. **Column-major access on row-major data**: Iterating over columns in row-major array\n4. **Struct of Arrays (SoA) vs Array of Structs (AoS) mismatch**\n",
+      "recommendations": [
+        "Transpose input tensors to make stride-1 dimension innermost",
+        "Use `float4` vectorized loads for 4x coalescing improvement",
+        "Reorder loop iterations to access consecutive memory addresses",
+        "Consider using shared memory to reorganize access patterns",
+        "Use `__ldg()` (read-only cache) for read-only data",
+        "Profile with `ncu --set full` to see exact transaction counts"
+      ],
+      "expected_improvement": "2-4x speedup from proper coalescing",
+      "code_example": "// BAD: Strided access (uncoalesced)\n__global__ void bad_kernel(float* A, int stride) {\n    int tid = blockIdx.x * blockDim.x + threadIdx.x;\n    float val = A[tid * stride];  // Threads access non-consecutive addresses\n}\n\n// GOOD: Consecutive access (coalesced)\n__global__ void good_kernel(float* A) {\n    int tid = blockIdx.x * blockDim.x + threadIdx.x;\n    float val = A[tid];  // Threads access consecutive addresses\n}\n\n// BETTER: Vectorized access (float4 = 4 elements per transaction)\n__global__ void better_kernel(float4* A) {\n    int tid = blockIdx.x * blockDim.x + threadIdx.x;\n    float4 val = A[tid];  // 128-bit load, perfectly coalesced\n}\n",
+      "references": []
+    },
+    "high_dram_throughput": {
+      "severity": "medium",
+      "title": "Memory-Bound Kernel",
+      "metrics_thresholds": {
+        "DRAM throughput": "Memory-bound threshold: >80.0%"
+      },
+      "root_cause": "\n**Memory-Bound Kernel Detected**\n\nThe kernel is limited by memory bandwidth, not compute. This means:\n- GPU cores are waiting for data from memory\n- Adding more compute won't help\n- Optimization should focus on reducing memory traffic\n\nThis is often the correct behavior for bandwidth-limited operations like:\n- Element-wise operations\n- Reductions\n- Memory copies\n",
+      "recommendations": [
+        "Reduce global memory accesses via shared memory caching",
+        "Use register tiling to keep data in registers longer",
+        "Consider kernel fusion to reduce intermediate memory writes",
+        "Use compression or lower precision to reduce bandwidth needs",
+        "If saturated: kernel is already memory-optimal, focus elsewhere"
+      ],
+      "expected_improvement": "Variable - depends on algorithmic changes",
+      "code_example": null,
+      "references": []
+    },
+    "occupancy_limiter:registers": {
+      "severity": "high",
+      "title": "Low Occupancy (Limited by Registers)",
+      "metrics_thresholds": {
+        "Warp occupancy": ">50.0% (target)",
+        "Registers per thread": "<64 (recommended)"
+      },
+      "root_cause": "\n**Register Pressure Limiting Occupancy**\n\nEach thread is using too many registers, limiting how many warps can run concurrently.\nThe GPU has a fixed number of registers per SM (65536 on H100), and high register usage\nper thread reduces the number of concurrent threads.\n\n- More registers per thread = fewer threads per SM\n- Fewer threads = less ability to hide memory latency\n- This is a compile-time issue from complex code or many local variables\n",
+      "recommendations": [
+        "Current register usage: 140 per thread (target: <64)",
+        "Use `__launch_bounds__(maxThreadsPerBlock, minBlocksPerSM)` to hint to compiler",
+        "Reduce local variables by recomputing values instead of storing",
+        "Use `#pragma unroll 1` to prevent aggressive unrolling",
+        "Move data from registers to shared memory if reused across threads",
+        "Compile with `-maxrregcount=N` to force register limit"
+      ],
+      "expected_improvement": "1.5-3x from improved latency hiding",
+      "code_example": null,
+      "references": []
+    },
+    "occupancy_limiter:shared_memory": {
+      "severity": "high",
+      "title": "Low Occupancy (Limited by Shared Memory)",
+      "metrics_thresholds": {
+        "Warp occupancy": ">50.0% (target)",
+        "Registers per thread": "<64 (recommended)"
+      },
+      "root_cause": "\n**Shared Memory Limiting Occupancy**\n\nThe kernel is using too much shared memory per block, limiting how many blocks\ncan run concurrently on each SM.\n\n- H100 has 227 KB shared memory per SM\n- A100 has 163 KB shared memory per SM\n- More shared memory per block = fewer blocks per SM\n",
+      "recommendations": [
+        "Reduce shared memory allocation per block",
+        "Use dynamic shared memory allocation for flexibility",
+        "Consider splitting work across more blocks with less shared memory each",
+        "Use register tiling instead of shared memory for some data",
+        "Check for over-allocation (arrays sized for worst case)"
+      ],
+      "expected_improvement": "1.5-3x from improved latency hiding",
+      "code_example": null,
+      "references": []
+    },
+    "occupancy_limiter:block_count": {
+      "severity": "high",
+      "title": "Low Occupancy (Limited by Block Count)",
+      "metrics_thresholds": {
+        "Warp occupancy": ">50.0% (target)",
+        "Registers per thread": "<64 (recommended)"
+      },
+      "root_cause": "\n**Block Count Limiting Occupancy**\n\nThe kernel's block configuration limits occupancy. This often happens with:\n- Very large block sizes (close to 1024 threads)\n- Workload that doesn't decompose into enough blocks\n- Mismatched grid dimensions for the problem size\n",
+      "recommendations": [
+        "Reduce block size (threads per block)",
+        "Increase grid size (more blocks)",
+        "Consider processing multiple elements per thread",
+        "Use persistent kernel patterns for small workloads"
+      ],
+      "expected_improvement": "1.5-3x from improved latency hiding",
+      "code_example": null,
+      "references": []
+    },
+    "high_register_usage": {
+      "severity": "high",
+      "title": "High Register Usage (Likely Spilling)",
+      "metrics_thresholds": {
+        "Registers per thread": "<96 (recommended)"
+      },
+      "root_cause": "\n**Excessive Register Usage**\n\nHigh register count indicates complex computations or many local variables.\nWhen register demand exceeds physical registers, the compiler \"spills\" to local\nmemory (L1 cache or DRAM), which is 10-100x slower than registers.\n\nSigns of register spilling:\n- High local memory usage in compilation output\n- Unexpectedly slow execution despite good occupancy\n",
+      "recommendations": [
+        "Simplify kernel logic or split into multiple kernels",
+        "Use `__launch_bounds__` to help compiler optimize",
+        "Force register limit with `-maxrregcount`",
+        "Consider using shared memory for some data",
+        "Reduce loop unrolling with `#pragma unroll 1`"
+      ],
+      "expected_improvement": "2-10x if eliminating register spilling",
+      "code_example": null,
+      "references": []
+    },
+    "warp_stall_analyzer:memory_dependency": {
+      "severity": "high",
+      "title": "High Warp Stalls (Memory Dependency)",
+      "metrics_thresholds": {
+        "Any stall type": "<40.0% (target)"
+      },
+      "root_cause": "\n**Memory Dependency Stalls**\n\nWarps are waiting for memory operations to complete. This is the most common\nbottleneck and indicates the kernel is memory-bound.\n\nCauses:\n- High global memory latency (400+ cycles)\n- Uncoalesced memory accesses\n- Insufficient parallelism to hide memory latency\n- No prefetching or memory pipelining\n",
+      "recommendations": [
+        "Use shared memory to cache frequently accessed data",
+        "Implement vectorized loads (float4) for better bandwidth",
+        "Ensure coalesced memory access patterns",
+        "Increase occupancy to hide memory latency (more warps)",
+        "Use __ldg() for read-only data (uses texture cache)",
+        "Consider software pipelining to overlap compute and memory"
+      ],
+      "expected_improvement": "1.5-3x depending on stall type",
+      "code_example": null,
+      "references": []
+    },
+    "warp_stall_analyzer:short_scoreboard": {
+      "severity": "high",
+      "title": "High Warp Stalls (Short Scoreboard)",
+      "metrics_thresholds": {
+        "Any stall type": "<40.0% (target)"
+      },
+      "root_cause": "\n**Short Scoreboard Stalls**\n\nWarps are waiting for shared memory, texture, or other MIO (Memory I/O) operations.\nThese have shorter latency than global memory but can still cause stalls.\n\nCauses:\n- Shared memory bank conflicts\n- Texture cache misses\n- Synchronization overhead\n",
+      "recommendations": [
+        "Check for shared memory bank conflicts",
+        "Reduce shared memory accesses if possible",
+        "Use padding to avoid bank conflicts: `__shared__ float A[32][33]`",
+        "Consider using registers instead of shared memory",
+        "Profile with ncu --set full to see bank conflict counts"
+      ],
+      "expected_improvement": "1.5-3x depending on stall type",
+      "code_example": null,
+      "references": []
+    },
+    "warp_stall_analyzer:long_scoreboard": {
+      "severity": "high",
+      "title": "High Warp Stalls (Long Scoreboard)",
+      "metrics_thresholds": {
+        "Any stall type": "<40.0% (target)"
+      },
+      "root_cause": "\n**Long Scoreboard Stalls**\n\nWarps are waiting for long-latency operations to complete. This is similar to\nmemory dependency but specifically for operations tracked by the long scoreboard.\n\nCauses:\n- Global memory loads not yet returned\n- Texture memory fetches\n- Atomics waiting for completion\n",
+      "recommendations": [
+        "Similar to memory dependency - optimize memory access",
+        "Use async copy for prefetching if on Ampere+ (cp.async)",
+        "Consider TMA on Hopper for bulk transfers",
+        "Increase warp-level parallelism"
+      ],
+      "expected_improvement": "1.5-3x depending on stall type",
+      "code_example": null,
+      "references": []
+    },
+    "warp_stall_analyzer:barrier": {
+      "severity": "high",
+      "title": "High Warp Stalls (Barrier)",
+      "metrics_thresholds": {
+        "Any stall type": "<40.0% (target)"
+      },
+      "root_cause": "\n**Barrier Stalls**\n\nWarps are waiting at __syncthreads() for other warps in the block to catch up.\nHigh barrier stalls indicate load imbalance within thread blocks.\n\nCauses:\n- Uneven workload distribution among threads\n- Too many synchronization points\n- Conditional code that causes divergent execution times\n- Using __syncthreads() inside conditional blocks (INCORRECT!)\n",
+      "recommendations": [
+        "Reduce number of __syncthreads() calls",
+        "Use warp-level primitives (__shfl, __ballot) when possible",
+        "Balance workload across threads in a block",
+        "Consider warp-synchronous programming for small data",
+        "NEVER put __syncthreads() inside conditional blocks"
+      ],
+      "expected_improvement": "1.5-3x depending on stall type",
+      "code_example": null,
+      "references": []
+    },
+    "warp_stall_analyzer:branch_resolving": {
+      "severity": "high",
+      "title": "High Warp Stalls (Branch Resolving)",
+      "metrics_thresholds": {
+        "Any stall type": "<40.0% (target)"
+      },
+      "root_cause": "\n**Branch Resolving Stalls**\n\nWarps are waiting for branch conditions to be evaluated. This indicates\nsignificant branch divergence where threads in a warp take different paths.\n\nCauses:\n- Data-dependent conditionals (if/else based on data values)\n- Thread-ID-dependent divergent paths\n- Complex control flow with many branches\n",
+      "recommendations": [
+        "Reorganize data to minimize branch divergence",
+        "Use arithmetic instead of branches where possible: `result = cond * val1 + (1-cond) * val2`",
+        "Sort data to group similar computation paths",
+        "Use predication for short conditional blocks",
+        "Consider separate kernels for different code paths"
+      ],
+      "expected_improvement": "1.5-3x depending on stall type",
+      "code_example": null,
+      "references": []
+    },
+    "barrier_stall_detector": {
+      "severity": "medium",
+      "title": "High Barrier Synchronization Stalls",
+      "metrics_thresholds": {
+        "Barrier stalls": "<30.0% (target)"
+      },
+      "root_cause": "\n**Excessive __syncthreads() Waiting**\n\nThreads are spending significant time waiting for block-level synchronization.\nThis reduces parallelism and indicates either:\n1. Too many sync points\n2. Load imbalance causing some warps to wait for slow warps\n3. Incorrect sync placement (NEVER in conditional blocks!)\n",
+      "recommendations": [
+        "Minimize __syncthreads() calls - only sync when necessary",
+        "Use warp-level primitives when data fits in a warp (32 threads)",
+        "Balance work across threads to reduce wait time",
+        "Consider warp-shuffle (__shfl_sync) for intra-warp communication",
+        "Check for __syncthreads() inside if/else blocks (BUG!)"
+      ],
+      "expected_improvement": "1.5-2x from reduced synchronization",
+      "code_example": "// WRONG: __syncthreads() in conditional\nif (threadIdx.x < 16) {\n    shared_data[threadIdx.x] = value;\n    __syncthreads();  // BUG: Not all threads reach this!\n}\n\n// RIGHT: __syncthreads() outside conditional\nif (threadIdx.x < 16) {\n    shared_data[threadIdx.x] = value;\n}\n__syncthreads();  // All threads sync\n\n// BETTER: Use warp-level ops for small data\nint warp_sum = __reduce_add_sync(0xFFFFFFFF, value);  // No __syncthreads needed\n",
+      "references": []
+    },
+    "wgmma_instruction_detector:wgmma": {
+      "severity": "info",
+      "title": "WGMMA Instructions Detected",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "Kernel is correctly using Hopper Tensor Cores",
+        "Consider TMA for further memory optimization"
+      ],
+      "expected_improvement": "Already optimized for tensor cores",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:hmma": {
+      "severity": "medium",
+      "title": "Using HMMA Instead of WGMMA",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "Consider upgrading to WGMMA for better Hopper performance",
+        "Use CUTLASS 3.x with Hopper-specific templates",
+        "Enable -arch=sm_90 and use warpgroup MMA APIs"
+      ],
+      "expected_improvement": "1.3-1.5x from WGMMA vs HMMA",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:imma": {
+      "severity": "info",
+      "title": "IMMA Instructions Detected (Integer Tensor Cores)",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "IMMA is correctly using integer tensor cores for quantized operations",
+        "On Hopper: WGMMA also supports INT8 \u2014 consider upgrading for better throughput",
+        "Ensure data is properly quantized and aligned for INT8/INT4 tensor core tiles"
+      ],
+      "expected_improvement": "Already using tensor cores for integer ops",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:dmma": {
+      "severity": "info",
+      "title": "DMMA Instructions Detected (FP64 Tensor Cores)",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "DMMA is correctly using FP64 tensor cores",
+        "On Hopper: WGMMA also supports FP64 \u2014 consider upgrading"
+      ],
+      "expected_improvement": "Already using tensor cores for FP64",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:bmma": {
+      "severity": "info",
+      "title": "BMMA Instructions Detected (Binary Tensor Cores)",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "BMMA is using binary tensor cores (Turing-era, INT1)",
+        "Note: BMMA is only available on Turing (sm_75)"
+      ],
+      "expected_improvement": "Already using tensor cores for binary ops",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:cublas": {
+      "severity": "info",
+      "title": "cuBLAS Library Detected (Tensor Cores Implied)",
+      "metrics_thresholds": {},
+      "root_cause": "",
+      "recommendations": [
+        "cuBLAS is already using tensor cores via runtime kernel selection",
+        "Consider cublasLt (cuBLAS Light) for more control over TC kernel selection",
+        "For Hopper: ensure CUDA 12+ for WGMMA-based cuBLAS kernels",
+        "Profile the cuBLAS kernel itself (not the wrapper) for TC utilization metrics"
+      ],
+      "expected_improvement": "Already optimized via cuBLAS",
+      "code_example": null,
+      "references": []
+    },
+    "wgmma_instruction_detector:none": {
+      "severity": "medium",
+      "title": "No Tensor Core Instructions Found in SASS",
+      "metrics_thresholds": {},
+      "root_cause": "\n**SASS Analysis: No Tensor Core Instructions Detected**\n\nThe compiled SASS assembly contains ZERO tensor core instructions\n(WGMMA, HMMA, IMMA, DMMA, or BMMA).\nIf this kernel performs matrix multiply operations (e.g., GEMM, convolution, attention, etc.),\nthis represents a significant optimization opportunity as tensor cores can provide 5-10x speedup.\n\nNote: Only matrix multiplication operations benefit from tensor cores.\nElement-wise ops, reductions, and non-matrix workloads do NOT use tensor cores.\n",
+      "recommendations": [
+        "If this kernel performs matrix operations, consider leveraging tensor core instructions to improve performance",
+        "Options include: cuBLAS, CUTLASS, or CUDA with inline PTX tensor core instructions"
+      ],
+      "expected_improvement": "5-10x for matrix operations (if applicable)",
+      "code_example": null,
+      "references": []
+    },
+    "register_spill_detector": {
+      "severity": "high",
+      "title": "Register Spills Detected (STL/LDL in SASS)",
+      "metrics_thresholds": {},
+      "root_cause": "\n**Register Spills Confirmed (STL/LDL in SASS)**\n\nThe kernel uses more registers than available, causing spills to LOCAL memory.\nLOCAL memory is backed by HBM/DRAM (off-chip), making spill accesses ~100x\nslower than register access.\n\n- STL (Store to Local): spills register values to DRAM\n- LDL (Load from Local): reloads spilled values from DRAM\n",
+      "recommendations": [
+        "Reduce register pressure: simplify logic, reduce live variables in hot loops",
+        "Split into multiple smaller kernels",
+        "Move frequently accessed arrays to shared memory",
+        "Add __launch_bounds__(maxThreadsPerBlock, minBlocksPerSM) to guide register allocation",
+        "Try -maxrregcount=N compiler flag to cap registers",
+        "Use smaller tile sizes to reduce register pressure"
+      ],
+      "expected_improvement": "Potentially significant if spills are in hot loops",
+      "code_example": null,
+      "references": []
+    }
+  }
+}

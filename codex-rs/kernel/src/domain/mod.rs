@@ -1,0 +1,12 @@
+pub(crate) mod analysis;
+pub(crate) mod analyzers;
+pub(crate) mod dataset;
+pub(crate) mod feedback;
+pub(crate) mod gpu;
+mod gpu_binary;
+pub(crate) mod gpu_profile;
+pub(crate) mod models;
+pub(crate) mod profilers;
+pub(crate) mod prompts;
+pub(crate) mod scripts;
+pub(crate) mod simulated;

@@ -1,0 +1,4 @@
+# Fixture exporters only. Install CUDA-enabled torch and task dependencies
+# separately on GPU hosts; the workload adapter has no other package dependency.
+pydantic>=2,<3
+pandas==2.3.3

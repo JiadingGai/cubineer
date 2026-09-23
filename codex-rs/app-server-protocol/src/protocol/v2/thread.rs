@@ -54,6 +54,66 @@ pub enum ThreadStartSource {
 
 // === Threads, Turns, and Items ===
 // Thread APIs
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export_to = "v2/")]
+pub struct ThreadStartChildParams {
+    pub parent_thread_id: String,
+    pub startup: ControllerChildStartupParams,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+#[ts(export_to = "v2/")]
+pub struct ControllerChildStartupParams {
+    pub model: String,
+    pub model_provider: String,
+    pub cwd: String,
+    pub developer_instructions: String,
+    pub runtime_workspace_roots: Vec<AbsolutePathBuf>,
+    pub sandbox: SandboxMode,
+    pub config: HashMap<String, JsonValue>,
+    pub dynamic_tools: Vec<DynamicToolSpec>,
+}
+
+impl From<ControllerChildStartupParams> for ThreadStartParams {
+    fn from(value: ControllerChildStartupParams) -> Self {
+        Self {
+            model: Some(value.model),
+            model_provider: Some(value.model_provider),
+            cwd: Some(value.cwd),
+            developer_instructions: Some(value.developer_instructions),
+            runtime_workspace_roots: Some(value.runtime_workspace_roots),
+            sandbox: Some(value.sandbox),
+            config: Some(value.config),
+            dynamic_tools: Some(value.dynamic_tools),
+            ..Default::default()
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export_to = "v2/")]
+pub struct ThreadCloseChildParams {
+    pub parent_thread_id: String,
+    pub thread_id: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export_to = "v2/")]
+pub struct ThreadCloseChildResponse {}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
+#[serde(rename_all = "camelCase")]
+#[ts(export_to = "v2/")]
+pub struct ThreadStartChildResponse {
+    pub thread: Thread,
+    pub model: String,
+    pub model_provider: String,
+}
+
 #[derive(
     Serialize, Deserialize, Debug, Clone, PartialEq, Default, JsonSchema, TS, ExperimentalApi,
 )]
