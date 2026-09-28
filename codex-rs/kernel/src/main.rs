@@ -9,8 +9,8 @@ struct Cli {
 }
 
 fn main() -> anyhow::Result<()> {
-    let cli = Cli::parse();
-    codex_arg0::arg0_dispatch_or_else(move |paths| async move {
+    codex_arg0::arg0_dispatch_or_else(|paths| async move {
+        let cli = Cli::parse();
         codex_kernel::run(cli.kernel, paths, cli.config).await
     })
 }
