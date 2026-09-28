@@ -20,7 +20,7 @@ run_stage() {
     while IFS= read -r line; do
       line="${line//'%'/'%25'}"
       printf '::error title=%s failed::%s\n' "$name" "$line"
-    done < <(grep -E '(^error:|No space left|failed to|could not compile|signal:|panicked|fatal runtime error|stack overflow)' "$log" | tail -20)
+    done < <(grep -E '(^error:|^FAILED |^ERROR |^E +|AssertionError|No space left|failed to|could not compile|signal:|panicked|fatal runtime error|stack overflow|[0-9]+ failed)' "$log" | tail -20)
   fi
   rm -f "$log"
   return "$status"
@@ -37,4 +37,4 @@ run_stage "Cubineer build" cargo build --locked --profile "$profile" \
 cd "$repo_root"
 CUBINEER_TEST_BINARY="$target_dir/$profile/codex-kernel" \
 CUBINEER_TEST_MAIN_BINARY="$target_dir/$profile/codex" \
-  "$python" -m pytest cubineer/tests
+  run_stage "Python tests" "$python" -m pytest cubineer/tests
