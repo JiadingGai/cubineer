@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   metadata:
+    if: ${{ github.repository == 'openai/codex' }}
     runs-on: ubuntu-latest
     outputs:
       # Older revisions can contain a detector that does not emit this output.
