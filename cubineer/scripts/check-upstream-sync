@@ -6,11 +6,32 @@ python="${PYTHON:-python3}"
 target_dir="${CARGO_TARGET_DIR:-$repo_root/codex-rs/target}"
 profile="${CUBINEER_CARGO_PROFILE:-dev-small}"
 
+run_stage() {
+  local name="$1"
+  shift
+  local log
+  log="$(mktemp)"
+  set +e
+  "$@" 2>&1 | tee "$log"
+  local status="${PIPESTATUS[0]}"
+  set -e
+  if ((status != 0)) && [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    while IFS= read -r line; do
+      line="${line//'%'/'%25'}"
+      printf '::error title=%s failed::%s\n' "$name" "$line"
+    done < <(grep -E '(^error:|No space left|failed to|could not compile|signal:)' "$log" | tail -20)
+  fi
+  rm -f "$log"
+  return "$status"
+}
+
 cd "$repo_root/codex-rs"
-cargo test --locked --profile "$profile" -p codex-kernel-search -p codex-kernel
-cargo test --locked --profile "$profile" -p codex-core \
+run_stage "Kernel tests" cargo test --locked --profile "$profile" \
+  -p codex-kernel-search -p codex-kernel
+run_stage "Controller-child test" cargo test --locked --profile "$profile" -p codex-core \
   controller_children_share_budget_but_not_history_or_execution_capacity
-cargo build --locked --profile "$profile" -p codex-cli -p codex-kernel
+run_stage "Cubineer build" cargo build --locked --profile "$profile" \
+  -p codex-cli -p codex-kernel
 
 cd "$repo_root"
 CUBINEER_TEST_BINARY="$target_dir/$profile/codex-kernel" \
