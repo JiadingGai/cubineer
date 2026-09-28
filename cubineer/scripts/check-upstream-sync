@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+python="${PYTHON:-python3}"
+target_dir="${CARGO_TARGET_DIR:-$repo_root/codex-rs/target}"
+profile="${CUBINEER_CARGO_PROFILE:-dev-small}"
+
+cd "$repo_root/codex-rs"
+cargo test --locked --profile "$profile" -p codex-kernel-search -p codex-kernel
+cargo test --locked --profile "$profile" -p codex-core \
+  controller_children_share_budget_but_not_history_or_execution_capacity
+cargo build --locked --profile "$profile" -p codex-cli -p codex-kernel
+
+cd "$repo_root"
+CUBINEER_TEST_BINARY="$target_dir/$profile/codex-kernel" \
+CUBINEER_TEST_MAIN_BINARY="$target_dir/$profile/codex" \
+  "$python" -m pytest cubineer/tests
