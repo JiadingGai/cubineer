@@ -5,6 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 python="${PYTHON:-python3}"
 target_dir="${CARGO_TARGET_DIR:-$repo_root/codex-rs/target}"
 profile="${CUBINEER_CARGO_PROFILE:-dev-small}"
+export RUST_MIN_STACK="${RUST_MIN_STACK:-8388608}"
 
 run_stage() {
   local name="$1"
@@ -19,7 +20,7 @@ run_stage() {
     while IFS= read -r line; do
       line="${line//'%'/'%25'}"
       printf '::error title=%s failed::%s\n' "$name" "$line"
-    done < <(grep -E '(^error:|No space left|failed to|could not compile|signal:)' "$log" | tail -20)
+    done < <(grep -E '(^error:|No space left|failed to|could not compile|signal:|panicked|fatal runtime error|stack overflow)' "$log" | tail -20)
   fi
   rm -f "$log"
   return "$status"
