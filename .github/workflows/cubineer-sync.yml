@@ -2,6 +2,16 @@ name: Cubineer upstream sync
 
 on:
   pull_request:
+    paths:
+      - .github/workflows/cubineer-sync.yml
+      - cubineer/**
+      - codex-rs/Cargo.toml
+      - codex-rs/cli/**
+      - codex-rs/core/src/thread_manager.rs
+      - codex-rs/core/src/thread_manager/controller_child.rs
+      - codex-rs/core/src/thread_manager/controller_child_tests.rs
+      - codex-rs/kernel/**
+      - codex-rs/kernel-search/**
   push:
     branches:
       - main
