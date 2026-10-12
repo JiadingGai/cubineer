@@ -1,6 +1,8 @@
 use super::*;
 use crate::config::RolloutBudgetConfig;
 use crate::config::test_config;
+use codex_protocol::dynamic_tools::DynamicToolFunctionSpec;
+use codex_protocol::dynamic_tools::DynamicToolSpec;
 use codex_protocol::protocol::TokenUsage;
 use core_test_support::PathBufExt;
 use core_test_support::PathExt;
@@ -36,9 +38,25 @@ async fn controller_children_share_budget_but_not_history_or_execution_capacity(
         .await?;
     config.cwd = directory.path().join("candidate").abs();
     std::fs::create_dir_all(&config.cwd)?;
+    let reserved_thread_id = manager.reserve_thread_id();
+    let tools = vec![DynamicToolSpec::Function(DynamicToolFunctionSpec {
+        name: "profile_candidate".into(),
+        description: "Profile the candidate kernel".into(),
+        input_schema: serde_json::json!({"type": "object", "properties": {}}),
+        defer_loading: false,
+    })];
     let child = manager
-        .start_controller_child(parent.thread_id, StartThreadOptions::new(config.clone()))
+        .start_controller_child(
+            parent.thread_id,
+            StartThreadOptions {
+                reserved_thread_id: Some(reserved_thread_id),
+                dynamic_tools: tools.clone(),
+                ..StartThreadOptions::new(config.clone())
+            },
+        )
         .await?;
+    assert_eq!(child.thread_id, reserved_thread_id);
+    assert_eq!(child.thread.session.dynamic_tools().await, tools);
     let snapshot = child.thread.config_snapshot().await;
     assert_eq!(snapshot.parent_thread_id, Some(parent.thread_id));
     assert_eq!(snapshot.forked_from_thread_id, None);

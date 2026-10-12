@@ -16,9 +16,6 @@ impl ContextualUserFragment for KernelContextFragment {
     fn content_kind(&self) -> ContentItemKind {
         ContentItemKind("kernel.evidence".into())
     }
-    fn requires_separate_message(&self) -> bool {
-        true
-    }
     fn markers(&self) -> (&'static str, &'static str) {
         Self::type_markers()
     }
